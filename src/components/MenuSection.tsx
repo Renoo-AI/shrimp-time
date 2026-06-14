@@ -129,7 +129,7 @@ export default function MenuSection() {
         
         {/* Seafood Dishes Listing in Dark Mode */}
         <div className="lg:col-span-8 flex flex-col gap-6">
-          <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-6" id="menu-items-grid">
+          <motion.div layout className="flex flex-col gap-12" id="menu-items-grid">
             <AnimatePresence mode="popLayout">
             {filteredItems.map(item => {
               const countInPlateau = plateauItems[item.id] || 0;
@@ -142,10 +142,10 @@ export default function MenuSection() {
                   transition={{ duration: 0.4 }}
                   key={item.id}
                   onClick={() => setSelectedItem(item)}
-                  className="group relative rounded-[12px] bg-brand-navy/60 backdrop-blur-md border border-brand-yellow/35 hover:border-brand-yellow hover:shadow-2xl hover:shadow-brand-yellow/10 transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-lg h-full cursor-pointer text-white"
+                  className="group relative border-hairline border-b-0 pb-12 flex flex-col md:flex-row items-center gap-8 hover:bg-white/5 transition-all duration-500 cursor-pointer text-white"
                 >
                   {/* Dish Image with Gradient overlay */}
-                  <div className="relative h-48 w-full overflow-hidden bg-white/5">
+                  <div className="relative h-64 md:h-80 w-full md:w-1/2 overflow-hidden bg-white/5">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -175,7 +175,7 @@ export default function MenuSection() {
                   </div>
 
                   {/* Info Header */}
-                  <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div className="p-6 md:p-0 flex-1 flex flex-col justify-center text-left w-full">
                     <div>
                       <h3 className="text-xl font-serif font-black text-white group-hover:text-brand-yellow transition-colors leading-tight mb-2 uppercase">
                         {item.name}

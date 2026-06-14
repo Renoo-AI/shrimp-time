@@ -86,14 +86,14 @@ export default function App() {
             <motion.div
               initial={{ y: 0 }}
               exit={{ y: '-100%' }}
-              transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               className="absolute top-0 left-0 w-full h-1/2 bg-[#001C33] border-b border-brand-yellow/20"
             />
             {/* Bottom panel */}
             <motion.div
               initial={{ y: 0 }}
               exit={{ y: '100%' }}
-              transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               className="absolute bottom-0 left-0 w-full h-1/2 bg-[#001C33]"
             />
 
@@ -170,7 +170,7 @@ export default function App() {
       {/* Main site content with parallax scale and blur transition */}
       <motion.div
         animate={loading ? { scale: 0.96, opacity: 0.3, filter: 'blur(8px)' } : { scale: 1, opacity: 1, filter: 'blur(0px)' }}
-        transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         className="min-h-screen w-full relative"
       >
 

@@ -179,7 +179,7 @@ Merci de me confirmer la disponibilité !`;
                     id="date-input"
                     value={formData.date}
                     onChange={handleInputChange}
-                    className="bg-white/5 rounded-[8px] px-4 py-3 border border-white/10 text-white text-xs md:text-sm font-semibold focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow/20 transition-all duration-300 cursor-pointer"
+                    className="w-full bg-transparent px-0 py-3 border-0 border-b border-white/20 text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-0 transition-all duration-500 rounded-none cursor-pointer placeholder-white/30"
                   />
                   {errors.date && (
                     <p className="text-[10px] text-red-400 mt-1 font-bold">{errors.date}</p>
@@ -195,7 +195,7 @@ Merci de me confirmer la disponibilité !`;
                     name="time"
                     value={formData.time}
                     onChange={handleInputChange}
-                    className="w-full bg-white/5 rounded-[8px] px-4 py-3 border border-white/10 text-white text-xs md:text-sm font-semibold focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow/20 transition-all duration-300 cursor-pointer"
+                    className="w-full bg-transparent px-0 py-3 border-0 border-b border-white/20 text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-0 transition-all duration-500 rounded-none cursor-pointer placeholder-white/30"
                   >
                     {['12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30'].map(t => (
                       <option key={t} value={t} className="bg-brand-navy text-white">{t}</option>
@@ -221,7 +221,7 @@ Merci de me confirmer la disponibilité !`;
                   placeholder="Ex: Mohamed Ben Ali"
                   value={formData.customerName}
                   onChange={handleInputChange}
-                  className="bg-white/5 rounded-[8px] px-4 py-3 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow/20 transition-all duration-300 font-semibold"
+                  className="w-full bg-transparent px-0 py-3 border-0 border-b border-white/20 text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-0 transition-all duration-500 rounded-none placeholder-white/30"
                 />
                 {errors.customerName && (
                   <p className="text-[10px] text-red-400 mt-1 font-bold">{errors.customerName}</p>
@@ -240,7 +240,7 @@ Merci de me confirmer la disponibilité !`;
                   placeholder="Ex: 29 220 220"
                   value={formData.customerPhone}
                   onChange={handleInputChange}
-                  className="bg-white/5 rounded-[8px] px-4 py-3 border border-white/10 text-white text-sm placeholder-white/30 focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow/20 transition-all duration-300 font-semibold"
+                  className="w-full bg-transparent px-0 py-3 border-0 border-b border-white/20 text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-0 transition-all duration-500 rounded-none placeholder-white/30"
                 />
                 {errors.customerPhone && (
                   <p className="text-[10px] text-red-400 mt-1 font-bold">{errors.customerPhone}</p>
@@ -260,7 +260,7 @@ Merci de me confirmer la disponibilité !`;
                   rows={2}
                   value={formData.specialRequests}
                   onChange={handleInputChange}
-                  className="bg-white/5 rounded-[8px] px-4 py-3 border border-white/10 text-white text-xs placeholder-white/30 focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow/20 transition-all duration-300 resize-none font-semibold"
+                  className="w-full bg-transparent px-0 py-3 border-0 border-b border-white/20 text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-0 transition-all duration-500 rounded-none resize-none placeholder-white/30"
                 />
               </div>
 
