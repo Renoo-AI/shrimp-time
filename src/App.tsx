@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import MenuSection from './components/MenuSection';
 import BranchesSection from './components/BranchesSection';
@@ -10,6 +10,47 @@ const VID = [1, 2, 3][Math.floor(Math.random() * 3)];
 const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
 export default function App() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  useEffect(() => {
+    const tryUnmute = () => {
+      if (videoRef.current) {
+        videoRef.current.muted = false;
+        videoRef.current.play().then(() => {
+          setIsMuted(false);
+        }).catch((err) => {
+          console.log('Playback policy blocked audio autoplay', err);
+        });
+      }
+      // Remove listener after first interaction
+      window.removeEventListener('click', tryUnmute);
+      window.removeEventListener('touchstart', tryUnmute);
+      window.removeEventListener('scroll', tryUnmute);
+    };
+
+    window.addEventListener('click', tryUnmute);
+    window.addEventListener('touchstart', tryUnmute);
+    window.addEventListener('scroll', tryUnmute);
+
+    return () => {
+      window.removeEventListener('click', tryUnmute);
+      window.removeEventListener('touchstart', tryUnmute);
+      window.removeEventListener('scroll', tryUnmute);
+    };
+  }, []);
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      const targetMuted = !videoRef.current.muted;
+      videoRef.current.muted = targetMuted;
+      setIsMuted(targetMuted);
+      if (!targetMuted) {
+        videoRef.current.play().catch(() => {});
+      }
+    }
+  };
+
   return (
     <main className="min-h-screen antialiased bg-white text-navy">
       <Navbar />
@@ -17,7 +58,11 @@ export default function App() {
       {/* ═══════════ HERO — Video Background ═══════════ */}
       <section id="hero" className="relative min-h-[105vh] flex items-center justify-center overflow-hidden">
         <video
-          autoPlay muted loop playsInline
+          ref={videoRef}
+          autoPlay
+          muted={isMuted}
+          loop
+          playsInline
           className="absolute inset-0 w-full h-full object-cover z-0"
           style={{ filter: 'brightness(0.35) saturate(1.2)' }}
         >
@@ -101,6 +146,24 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Floating Sound Toggle */}
+      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+        <div className="bg-[#0A1F3F]/80 border border-[#F5D300]/30 backdrop-blur-md text-white text-[10px] font-sans font-bold tracking-wider py-2 px-3 rounded-lg shadow-xl select-none hidden sm:block">
+          {isMuted ? '🔇 SOUND OFF' : '🔊 SOUND ON'}
+        </div>
+        <button
+          onClick={toggleMute}
+          className="w-12 h-12 rounded-full flex items-center justify-center border-2 border-[#F5D300] bg-[#0A1F3F] text-white hover:bg-[#F5D300] hover:text-[#0A1F3F] transition-all duration-300 shadow-2xl cursor-pointer hover:scale-105"
+          aria-label={isMuted ? 'Unmute sound' : 'Mute sound'}
+        >
+          {isMuted ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M23 9l-6 6M17 9l6 6"/></svg>
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse text-[#F5D300]"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          )}
+        </button>
+      </div>
     </main>
   );
 }

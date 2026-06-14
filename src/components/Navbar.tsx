@@ -67,34 +67,34 @@ export default function Navbar() {
           </button>
 
           {/* Desktop Links (Horizontal) */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-8">
             <button
               onClick={() => go('menu')}
-              className={`text-sm font-bold tracking-widest transition-colors cursor-pointer ${
-                activeSection === 'menu' ? 'text-[#F5D300]' : 'text-white/80 hover:text-[#F5D300]'
+              className={`text-xs uppercase font-extrabold tracking-[0.2em] transition-colors cursor-pointer ${
+                activeSection === 'menu' ? 'text-[#F5D300]' : 'text-white/85 hover:text-[#F5D300]'
               }`}
             >
-              [ MENU ]
+              MENU
             </button>
             <button
               onClick={() => go('branches')}
-              className={`text-sm font-bold tracking-widest transition-colors cursor-pointer ${
-                activeSection === 'branches' ? 'text-[#F5D300]' : 'text-white/80 hover:text-[#F5D300]'
+              className={`text-xs uppercase font-extrabold tracking-[0.2em] transition-colors cursor-pointer ${
+                activeSection === 'branches' ? 'text-[#F5D300]' : 'text-white/85 hover:text-[#F5D300]'
               }`}
             >
-              [ BRANCHES ]
+              BRANCHES
             </button>
             <button
               onClick={() => go('reservation')}
-              className={`text-sm font-bold tracking-widest transition-colors cursor-pointer ${
-                activeSection === 'reservation' ? 'text-[#F5D300]' : 'text-white/80 hover:text-[#F5D300]'
+              className={`text-xs uppercase font-extrabold tracking-[0.2em] transition-colors cursor-pointer ${
+                activeSection === 'reservation' ? 'text-[#F5D300]' : 'text-white/85 hover:text-[#F5D300]'
               }`}
             >
-              [ BOOK ]
+              BOOK NOW
             </button>
             <a
               href={`tel:${BRANCHES[0].phone}`}
-              className="text-sm font-bold tracking-widest text-[#F5D300] hover:text-[#E0C200] transition-colors flex items-center gap-1"
+              className="text-xs uppercase font-extrabold tracking-[0.2em] text-[#F5D300] hover:text-[#E0C200] transition-colors flex items-center gap-1.5"
             >
               <span>📞</span>
               <span>{BRANCHES[0].phoneDisplay}</span>
