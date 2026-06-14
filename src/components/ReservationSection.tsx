@@ -26,20 +26,18 @@ export default function ReservationSection() {
     const branchName = branch ? branch.name : form.branch;
     const dateParts = form.date.split('-');
     const dateFormatted = `${dateParts[2] || ''}/${dateParts[1] || ''}/${dateParts[0] || ''}`;
-    return `Bonjour Shrimp Time, Réservation pour ${form.guests} personnes le ${dateFormatted} à ${form.time} à la branche ${branchName} Tel: ${form.phone}`;
+    return `Bonjour Shrimp Time, R\u00e9servation pour ${form.guests} personnes le ${dateFormatted} \u00e0 ${form.time} \u00e0 la branche ${branchName} Tel: ${form.phone}`;
   };
 
   const launchConfetti = () => {
     if (!confettiRef.current) return;
     const container = confettiRef.current;
-    const colors = ['#F5D300', '#0A1F3F', '#8B9A3D', '#FFFFFF'];
-    for (let i = 0; i < 60; i++) {
+    const emojis = ['🦐', '✨', '🦞', '🦑', '🍋'];
+    for (let i = 0; i < 50; i++) {
       const particle = document.createElement('span');
-      particle.textContent = ['🦐', '✨', '🦞', '🦑', '🍋'][Math.floor(Math.random() * 5)];
+      particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
       particle.style.cssText = `
-        position: absolute;
-        left: ${Math.random() * 100}%;
-        top: 0;
+        position: absolute; left: ${Math.random() * 100}%; top: 0;
         font-size: ${Math.random() * 20 + 14}px;
         animation: confetti-fall ${Math.random() * 2 + 1.5}s ease-out forwards;
         animation-delay: ${Math.random() * 0.5}s;
@@ -54,13 +52,13 @@ export default function ReservationSection() {
     e.preventDefault();
     const errs: Record<string, string> = {};
 
-    if (!form.branch) errs.branch = 'Veuillez choisir une branche';
+    if (!form.branch) errs.branch = 'Choisissez une branche';
     if (!form.phone.trim()) {
-      errs.phone = 'Numéro de téléphone requis';
+      errs.phone = 'Numéro requis';
     } else if (!validateTunisianPhone(form.phone)) {
-      errs.phone = 'Numéro tunisien invalide (8 chiffres)';
+      errs.phone = 'Numéro tunisien invalide';
     }
-    if (form.guests < 1 || form.guests > 20) errs.guests = '1 à 20 personnes';
+    if (form.guests < 1 || form.guests > 20) errs.guests = '1–20 personnes';
     if (!form.date) errs.date = 'Date requise';
     if (!form.time) errs.time = 'Heure requise';
 
@@ -71,259 +69,170 @@ export default function ReservationSection() {
 
     const branch = BRANCHES.find((b) => b.id === form.branch);
     const phone = branch ? branch.phone.replace('+', '') : '21698900372';
-    const message = buildWhatsAppMessage();
-    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(buildWhatsAppMessage())}`;
 
     setSuccess(true);
     launchConfetti();
     setForm({ ...RESERVATION_FORM_INITIAL });
 
-    setTimeout(() => {
-      window.open(waUrl, '_blank');
-    }, 600);
-
+    setTimeout(() => window.open(waUrl, '_blank'), 600);
     setTimeout(() => setSuccess(false), 3000);
   };
 
   const today = new Date().toISOString().split('T')[0];
 
   return (
-    <section id="reservation" className="py-20 md:py-[100px] px-5 md:px-10 relative" style={{ backgroundColor: '#FFFFFF' }}>
-      {/* Confetti container */}
+    <section id="reservation" className="relative py-28 md:py-36 px-8 md:px-16 lg:px-24 noise-section" style={{ backgroundColor: '#080B14' }}>
       <div ref={confettiRef} className="absolute inset-0 pointer-events-none overflow-hidden z-10" />
 
-      <div className="max-w-[500px] mx-auto relative z-20">
-        {/* Heading */}
-        <div className="text-center mb-10">
-          <h2 className="font-serif text-[36px] md:text-[48px] font-bold text-brand-navy">
-            Réserver une Table
-          </h2>
-          <div
-            className="mx-auto mt-2 mb-4"
-            style={{ width: '60px', height: '3px', backgroundColor: '#F5D300' }}
-          />
-          <p className="text-base text-brand-muted">Réservez en ligne, sans appel</p>
-        </div>
-
-        {/* Form Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.6 }}
-          className="p-8 rounded-xl"
-          style={{
-            backgroundColor: '#FFFFFF',
-            borderRadius: '12px',
-            border: '1px solid rgba(245,211,0,0.2)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-          }}
-        >
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5" noValidate>
-            {/* Branch */}
-            <div>
-              <label className="block text-sm font-semibold text-brand-navy mb-2">
-                Choisissez votre branche *
-              </label>
-              <select
-                value={form.branch}
-                onChange={(e) => set('branch', e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border font-sans text-sm text-brand-navy bg-white cursor-pointer transition-all duration-200 focus:outline-none"
-                style={{
-                  borderRadius: '8px',
-                  border: errors.branch ? '1px solid #DC2626' : '1px solid #D1D5DB',
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#F5D300';
-                  e.target.style.outline = '2px solid rgba(245,211,0,0.3)';
-                  e.target.style.outlineOffset = '0';
-                }}
-                onBlur={(e) => {
-                  e.target.style.outline = 'none';
-                  if (!errors.branch) e.target.style.borderColor = '#D1D5DB';
-                }}
-              >
-                <option value="">-- Sélectionnez --</option>
-                {BRANCHES.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name} – {b.phoneDisplay}
-                  </option>
-                ))}
-              </select>
-              {errors.branch && (
-                <p className="text-xs mt-1 font-medium" style={{ color: '#DC2626' }}>{errors.branch}</p>
-              )}
-            </div>
-
-            {/* Phone */}
-            <div>
-              <label className="block text-sm font-semibold text-brand-navy mb-2">
-                📱 Votre numéro de téléphone *
-              </label>
-              <input
-                type="tel"
-                value={form.phone}
-                onChange={(e) => set('phone', e.target.value)}
-                placeholder="98 900 372"
-                className="w-full px-4 py-3 rounded-lg border font-sans text-sm text-brand-navy placeholder:text-gray-400 transition-all duration-200 focus:outline-none"
-                style={{
-                  borderRadius: '8px',
-                  border: errors.phone ? '1px solid #DC2626' : '1px solid #D1D5DB',
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#F5D300';
-                  e.target.style.outline = '2px solid rgba(245,211,0,0.3)';
-                  e.target.style.outlineOffset = '0';
-                }}
-                onBlur={(e) => {
-                  e.target.style.outline = 'none';
-                  if (!errors.phone) e.target.style.borderColor = '#D1D5DB';
-                }}
-              />
-              {errors.phone && (
-                <p className="text-xs mt-1 font-medium" style={{ color: '#DC2626' }}>{errors.phone}</p>
-              )}
-            </div>
-
-            {/* Guests */}
-            <div>
-              <label className="block text-sm font-semibold text-brand-navy mb-2">
-                👥 Nombre de personnes *
-              </label>
-              <select
-                value={form.guests}
-                onChange={(e) => set('guests', parseInt(e.target.value))}
-                className="w-full px-4 py-3 rounded-lg border font-sans text-sm text-brand-navy bg-white cursor-pointer transition-all duration-200 focus:outline-none"
-                style={{
-                  borderRadius: '8px',
-                  border: errors.guests ? '1px solid #DC2626' : '1px solid #D1D5DB',
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#F5D300';
-                  e.target.style.outline = '2px solid rgba(245,211,0,0.3)';
-                  e.target.style.outlineOffset = '0';
-                }}
-                onBlur={(e) => {
-                  e.target.style.outline = 'none';
-                  if (!errors.guests) e.target.style.borderColor = '#D1D5DB';
-                }}
-              >
-                {Array.from({ length: 20 }, (_, i) => i + 1).map((n) => (
-                  <option key={n} value={n}>{n} personne{n > 1 ? 's' : ''}</option>
-                ))}
-              </select>
-              {errors.guests && (
-                <p className="text-xs mt-1 font-medium" style={{ color: '#DC2626' }}>{errors.guests}</p>
-              )}
-            </div>
-
-            {/* Date */}
-            <div>
-              <label className="block text-sm font-semibold text-brand-navy mb-2">
-                📅 Date souhaitée *
-              </label>
-              <input
-                type="date"
-                value={form.date}
-                min={today}
-                onChange={(e) => set('date', e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border font-sans text-sm text-brand-navy cursor-pointer transition-all duration-200 focus:outline-none"
-                style={{
-                  borderRadius: '8px',
-                  border: errors.date ? '1px solid #DC2626' : '1px solid #D1D5DB',
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#F5D300';
-                  e.target.style.outline = '2px solid rgba(245,211,0,0.3)';
-                  e.target.style.outlineOffset = '0';
-                }}
-                onBlur={(e) => {
-                  e.target.style.outline = 'none';
-                  if (!errors.date) e.target.style.borderColor = '#D1D5DB';
-                }}
-              />
-              {errors.date && (
-                <p className="text-xs mt-1 font-medium" style={{ color: '#DC2626' }}>{errors.date}</p>
-              )}
-            </div>
-
-            {/* Time */}
-            <div>
-              <label className="block text-sm font-semibold text-brand-navy mb-2">
-                🕐 Heure souhaitée *
-              </label>
-              <select
-                value={form.time}
-                onChange={(e) => set('time', e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border font-sans text-sm text-brand-navy bg-white cursor-pointer transition-all duration-200 focus:outline-none"
-                style={{
-                  borderRadius: '8px',
-                  border: errors.time ? '1px solid #DC2626' : '1px solid #D1D5DB',
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#F5D300';
-                  e.target.style.outline = '2px solid rgba(245,211,0,0.3)';
-                  e.target.style.outlineOffset = '0';
-                }}
-                onBlur={(e) => {
-                  e.target.style.outline = 'none';
-                  if (!errors.time) e.target.style.borderColor = '#D1D5DB';
-                }}
-              >
-                {TIME_SLOTS.map((t) => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-              </select>
-              {errors.time && (
-                <p className="text-xs mt-1 font-medium" style={{ color: '#DC2626' }}>{errors.time}</p>
-              )}
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              className="w-full py-4 rounded-lg font-sans font-bold text-base uppercase tracking-wider cursor-pointer transition-all duration-300 mt-2"
-              style={{
-                backgroundColor: '#F5D300',
-                color: '#0A1F3F',
-                borderRadius: '8px',
-              }}
-              onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.backgroundColor = '#E0C200';
-              }}
-              onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.backgroundColor = '#F5D300';
-              }}
+      <div className="max-w-[1400px] mx-auto relative z-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-16 lg:gap-24">
+          
+          {/* Left — Heading + context */}
+          <div>
+            <motion.p
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="font-sans text-[10px] uppercase tracking-[0.3em] text-muted-dark mb-4 font-semibold"
             >
-              Réserver maintenant →
-            </button>
-          </form>
-        </motion.div>
+              Service de Conciergerie
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="font-serif text-5xl md:text-7xl font-black text-parchment tracking-tight"
+            >
+              Réserver une Table
+            </motion.h2>
+            <motion.div
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.25 }}
+              className="accent-line mt-8"
+              style={{ transformOrigin: 'left' }}
+            />
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.4 }}
+              className="font-sans text-sm text-muted-dark mt-8 leading-relaxed max-w-[300px]"
+            >
+              Réservez en ligne, sans appel. Confirmation immédiate via WhatsApp.
+            </motion.p>
+          </div>
 
-        {/* Success message */}
-        {success && (
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mt-4 text-sm text-brand-olive font-semibold"
+          {/* Right — Brutalist form */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ duration: 0.8, delay: 0.3 }}
           >
-            Réservation envoyée ! Ouverture de WhatsApp...
-          </motion.p>
-        )}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+              {/* Branch */}
+              <div>
+                <label className="block font-sans text-[10px] uppercase tracking-[0.2em] text-muted-dark mb-3 font-semibold">
+                  Branche
+                </label>
+                <select
+                  value={form.branch}
+                  onChange={(e) => set('branch', e.target.value)}
+                  className="brutal-select"
+                >
+                  <option value="">-- Sélectionnez --</option>
+                  {BRANCHES.map((b) => (
+                    <option key={b.id} value={b.id}>{b.name}</option>
+                  ))}
+                </select>
+                {errors.branch && <p className="font-sans text-xs text-error mt-2">{errors.branch}</p>}
+              </div>
 
-        {/* Footer text */}
-        <p className="text-center mt-4 text-sm text-brand-muted">
-          ⚡ Sans engagement. Confirmation immédiate via WhatsApp.
-        </p>
+              {/* Phone */}
+              <div>
+                <label className="block font-sans text-[10px] uppercase tracking-[0.2em] text-muted-dark mb-3 font-semibold">
+                  Téléphone
+                </label>
+                <input
+                  type="tel"
+                  value={form.phone}
+                  onChange={(e) => set('phone', e.target.value)}
+                  placeholder="98 900 372"
+                  className="brutal-input"
+                />
+                {errors.phone && <p className="font-sans text-xs text-error mt-2">{errors.phone}</p>}
+              </div>
+
+              {/* Guests + Date row */}
+              <div className="grid grid-cols-2 gap-8">
+                <div>
+                  <label className="block font-sans text-[10px] uppercase tracking-[0.2em] text-muted-dark mb-3 font-semibold">
+                    Personnes
+                  </label>
+                  <select
+                    value={form.guests}
+                    onChange={(e) => set('guests', parseInt(e.target.value))}
+                    className="brutal-select"
+                  >
+                    {Array.from({ length: 20 }, (_, i) => i + 1).map((n) => (
+                      <option key={n} value={n}>{n}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-sans text-[10px] uppercase tracking-[0.2em] text-muted-dark mb-3 font-semibold">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    value={form.date}
+                    min={today}
+                    onChange={(e) => set('date', e.target.value)}
+                    className="brutal-input"
+                  />
+                  {errors.date && <p className="font-sans text-xs text-error mt-2">{errors.date}</p>}
+                </div>
+              </div>
+
+              {/* Time */}
+              <div>
+                <label className="block font-sans text-[10px] uppercase tracking-[0.2em] text-muted-dark mb-3 font-semibold">
+                  Heure
+                </label>
+                <select
+                  value={form.time}
+                  onChange={(e) => set('time', e.target.value)}
+                  className="brutal-select"
+                >
+                  {TIME_SLOTS.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Submit */}
+              <button type="submit" className="btn-primary w-full mt-4">
+                Réserver maintenant →
+              </button>
+
+              {success && (
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="font-sans text-xs text-olive text-center"
+                >
+                  Réservation envoyée. Ouverture de WhatsApp...
+                </motion.p>
+              )}
+            </form>
+          </motion.div>
+        </div>
       </div>
-
-      {/* Confetti keyframes injected once */}
-      <style>{`
-        @keyframes confetti-fall {
-          0% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
-          100% { opacity: 0; transform: translateY(500px) rotate(720deg) scale(0.3); }
-        }
-      `}</style>
     </section>
   );
 }

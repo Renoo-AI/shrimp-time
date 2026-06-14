@@ -4,65 +4,79 @@ import { motion } from 'motion/react';
 
 export default function BranchesSection() {
   return (
-    <section id="branches" className="py-20 md:py-[100px] px-5 md:px-10" style={{ backgroundColor: '#FFFFFF' }}>
-      <div className="max-w-[1200px] mx-auto">
-        {/* Heading */}
-        <div className="text-center mb-12">
-          <h2 className="font-serif text-[36px] md:text-[48px] font-bold text-brand-navy">
+    <section id="branches" className="relative py-28 md:py-36 px-8 md:px-16 lg:px-24" style={{ backgroundColor: '#F8F6F2' }}>
+      <div className="max-w-[1400px] mx-auto">
+        {/* Section header — asymmetric */}
+        <div className="mb-20 md:mb-28">
+          <motion.p
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="font-sans text-[10px] uppercase tracking-[0.3em] text-muted-light mb-4 font-semibold"
+          >
+            Tunis, Tunisie
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="font-serif text-5xl md:text-7xl font-black text-ink tracking-tight"
+          >
             Nos Branches
-          </h2>
-          <div
-            className="mx-auto mt-2"
-            style={{ width: '60px', height: '3px', backgroundColor: '#F5D300' }}
+          </motion.h2>
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="accent-line mt-8"
+            style={{ transformOrigin: 'left' }}
           />
         </div>
 
-        {/* Branch Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[800px] mx-auto">
+        {/* Branch cards — asymmetric grid, not equal */}
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_0.8fr] gap-1">
           {BRANCHES.map((branch, i) => (
             <motion.div
               key={branch.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.5, delay: i * 0.15 }}
-              className="p-8 rounded-xl transition-all duration-300 hover:-translate-y-1 cursor-default"
-              style={{
-                backgroundColor: '#FFFFFF',
-                borderRadius: '12px',
-                border: '1px solid rgba(245,211,0,0.2)',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 30px rgba(0,0,0,0.1)';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)';
-              }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.8, delay: i * 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="group relative p-10 md:p-14 transition-colors duration-500 hover:bg-amber/[0.03]"
             >
-              <span className="text-[40px] block mb-4">🦐</span>
-              <h3 className="font-serif text-xl font-bold text-brand-navy mb-2 uppercase">
-                {branch.name}
-              </h3>
-              <p className="text-sm text-brand-muted mb-4 leading-relaxed">{branch.address}</p>
-              <p className="text-sm text-brand-muted mb-5">📞 {branch.phoneDisplay}</p>
-              <a
-                href={`tel:${branch.phone}`}
-                className="inline-block px-8 py-3 rounded-lg font-sans font-semibold text-sm uppercase tracking-wider cursor-pointer transition-all duration-300"
-                style={{
-                  backgroundColor: '#F5D300',
-                  color: '#0A1F3F',
-                  borderRadius: '8px',
-                }}
-                onMouseEnter={(e) => {
-                  (e.target as HTMLElement).style.backgroundColor = '#E0C200';
-                }}
-                onMouseLeave={(e) => {
-                  (e.target as HTMLElement).style.backgroundColor = '#F5D300';
-                }}
-              >
-                Appeler
-              </a>
+              {/* Thin top line */}
+              <div className="absolute top-0 left-0 right-0 h-px bg-ink/[0.08]" />
+
+              <span className="font-serif text-7xl md:text-8xl font-black text-ink/[0.06] leading-none select-none">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+
+              <div className="mt-6 md:mt-8">
+                <h3 className="font-serif text-2xl md:text-3xl font-bold text-ink tracking-tight">
+                  {branch.name}
+                </h3>
+                <p className="font-sans text-sm text-muted-light mt-3 leading-relaxed max-w-[320px]">
+                  {branch.address}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-6 mt-8">
+                <a
+                  href={`tel:${branch.phone}`}
+                  className="font-sans text-sm font-semibold text-ink hover:text-amber transition-colors duration-200 tracking-tight"
+                >
+                  {branch.phoneDisplay}
+                </a>
+                <a
+                  href={`tel:${branch.phone}`}
+                  className="font-sans text-[11px] uppercase tracking-[0.2em] text-muted-light hover:text-ink transition-colors duration-200 font-semibold"
+                >
+                  Appeler →
+                </a>
+              </div>
             </motion.div>
           ))}
         </div>

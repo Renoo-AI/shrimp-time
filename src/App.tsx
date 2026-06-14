@@ -13,143 +13,142 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen font-sans text-brand-navy antialiased">
+    <div className="min-h-screen font-sans text-parchment antialiased relative" style={{ backgroundColor: '#080B14' }}>
+      {/* ── Global Noise Overlay ── */}
+      <div className="noise-overlay" />
+
       <Navbar />
 
-      {/* ==================== HERO ==================== */}
+      {/* ═══════════════ HERO ═══════════════ */}
       <section
         id="hero"
-        className="relative min-h-screen flex flex-col items-center justify-center px-5 text-center overflow-hidden"
-        style={{ backgroundColor: '#0A1F3F' }}
+        className="relative min-h-screen flex items-center overflow-hidden noise-section"
+        style={{ backgroundColor: '#080B14' }}
       >
-        {/* Subtle seafood background image overlay */}
+        {/* Ambient glow — single amber light source */}
+        <div className="absolute top-[15%] right-[10%] w-[600px] h-[600px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(245,211,0,0.06) 0%, transparent 70%)' }}
+        />
+
+        {/* Hero bg image — very subtle */}
         <div
-          className="absolute inset-0 z-0 opacity-[0.12]"
+          className="absolute inset-0 z-0 opacity-[0.06]"
           style={{
             backgroundImage: "url('/hero-bg.jpg')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         />
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-brand-navy/60 z-0" />
 
-        {/* Content */}
-        <div className="relative z-10 flex flex-col items-center max-w-3xl">
-          {/* Logo */}
+        {/* Left column — Logo + tagline */}
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-8 md:px-16 lg:px-24 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-16 lg:gap-0 pt-32 pb-16">
+          
+          {/* Logo block — offset, not centered */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col items-start"
           >
             <img
               src="/logo.png"
-              alt="Shrimp Time logo"
-              className="w-full max-w-[300px] h-auto mx-auto"
+              alt="Shrimp Time"
+              className="w-[220px] md:w-[280px] h-auto mb-10"
             />
+            <div className="accent-line mb-6" style={{ transformOrigin: 'left' }} />
+            <p className="font-sans text-[11px] md:text-xs uppercase tracking-[0.25em] text-muted-dark font-medium">
+              Vivez l'expérience
+            </p>
+            <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-olive/70 mt-2 font-medium">
+              عيش التجربة
+            </p>
           </motion.div>
 
-          {/* French tagline */}
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="text-brand-olive font-sans text-[18px] uppercase tracking-[2px] mt-4"
-          >
-            Vivez l'expérience
-          </motion.p>
-
-          {/* Buttons */}
+          {/* Right column — Giant title + buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5 mt-10"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col items-end text-right"
           >
-            {/* Primary: Voir le Menu */}
-            <button
-              onClick={() => scrollTo('menu')}
-              className="w-full sm:w-auto px-8 py-4 rounded-lg font-sans font-bold text-base uppercase tracking-wider cursor-pointer transition-all duration-300"
-              style={{
-                backgroundColor: '#F5D300',
-                color: '#0A1F3F',
-                borderRadius: '8px',
-              }}
-              onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.backgroundColor = '#E0C200';
-              }}
-              onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.backgroundColor = '#F5D300';
-              }}
-            >
-              📖 Voir le Menu
-            </button>
-
-            {/* Secondary outline: Réserver */}
-            <button
-              onClick={() => scrollTo('reservation')}
-              className="w-full sm:w-auto px-8 py-4 rounded-lg font-sans font-bold text-base uppercase tracking-wider cursor-pointer transition-all duration-300"
-              style={{
-                backgroundColor: 'transparent',
-                color: '#F5D300',
-                border: '2px solid #F5D300',
-                borderRadius: '8px',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#F5D300';
-                e.currentTarget.style.color = '#0A1F3F';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = '#F5D300';
-              }}
-            >
-              📞 Réserver
-            </button>
+            <h1 className="font-serif text-[14vw] md:text-[10vw] lg:text-[120px] font-black leading-[0.85] tracking-tight text-parchment">
+              SHRIMP<br />TIME
+            </h1>
+            <p className="font-sans text-sm md:text-base text-muted-dark mt-6 max-w-[380px] leading-relaxed font-medium">
+              Fruits de mer frais, ambiance premium.<br />
+              Deux branches à Tunis.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 mt-10">
+              <button onClick={() => scrollTo('menu')} className="btn-primary">
+                Voir le Menu
+              </button>
+              <button onClick={() => scrollTo('reservation')} className="btn-ghost">
+                Réserver
+              </button>
+            </div>
           </motion.div>
         </div>
+
+        {/* Bottom decorative line */}
+        <div className="absolute bottom-0 left-8 md:left-16 lg:left-24 right-8 md:right-16 lg:right-24 h-px bg-white/[0.04]" />
       </section>
 
-      {/* ==================== BRANCHES ==================== */}
+      {/* ═══════════════ BRANCHES ═══════════════ */}
       <BranchesSection />
 
-      {/* ==================== MENU ==================== */}
+      {/* ═══════════════ MENU ═══════════════ */}
       <MenuSection />
 
-      {/* ==================== RESERVATION ==================== */}
+      {/* ═══════════════ RESERVATION ═══════════════ */}
       <ReservationSection />
 
-      {/* ==================== FOOTER ==================== */}
-      <footer
-        className="py-16 px-5 md:px-10 text-center"
-        style={{ backgroundColor: '#0A1F3F' }}
-      >
-        <div className="max-w-4xl mx-auto flex flex-col items-center text-white">
-          {/* Small logo */}
-          <img src="/logo.png" alt="Shrimp Time" className="h-12 w-auto mb-4" />
+      {/* ═══════════════ FOOTER ═══════════════ */}
+      <footer className="relative py-24 px-8 md:px-16 lg:px-24 noise-section" style={{ backgroundColor: '#080B14' }}>
+        <div className="max-w-[1400px] mx-auto">
+          <div className="h-px bg-white/[0.06] mb-16" />
+          
+          <div className="flex flex-col lg:flex-row justify-between items-start gap-12">
+            {/* Left */}
+            <div className="flex flex-col gap-6">
+              <img src="/logo.png" alt="Shrimp Time" className="h-10 w-auto opacity-70" />
+              <div>
+                <p className="font-sans text-xs uppercase tracking-[0.2em] text-muted-dark font-semibold mb-3">
+                  Nos Branches
+                </p>
+                {BRANCHES.map((b) => (
+                  <p key={b.id} className="font-serif text-lg text-parchment/60 leading-relaxed">
+                    {b.name}<br />
+                    <span className="font-sans text-xs text-muted-dark">{b.address}</span>
+                  </p>
+                ))}
+              </div>
+            </div>
 
-          <p className="font-serif text-lg font-bold tracking-wider mb-1">Shrimp Time</p>
-          <p className="text-sm text-white/60 mb-6">
-            📍 {BRANCHES.map((b) => b.name).join(' & ')}
-          </p>
-          <p className="text-sm text-white/60 mb-4">
-            📞 {BRANCHES[0].phoneDisplay}
-          </p>
+            {/* Right */}
+            <div className="flex flex-col gap-6 items-start lg:items-end text-left lg:text-right">
+              <div>
+                <p className="font-sans text-xs uppercase tracking-[0.2em] text-muted-dark font-semibold mb-3">
+                  Contact
+                </p>
+                <p className="font-serif text-xl text-parchment/80">
+                  {BRANCHES[0].phoneDisplay}
+                </p>
+              </div>
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-sans text-xs uppercase tracking-[0.2em] text-muted-dark hover:text-amber transition-colors duration-300"
+              >
+                @shrimp_.time
+              </a>
+            </div>
+          </div>
 
-          {/* Instagram */}
-          <a
-            href={INSTAGRAM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-brand-yellow transition-colors mb-8"
-          >
-            📸 @shrimp_.time
-          </a>
+          <div className="h-px bg-white/[0.04] my-10" />
 
-          <div className="w-12 h-px bg-white/15 mb-6" />
-
-          <p className="text-xs text-white/40">
-            © {new Date().getFullYear()} Shrimp Time. Tous droits réservés.
+          <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-muted-dark/50">
+            &copy; {new Date().getFullYear()} Shrimp Time. Tous droits réservés.
           </p>
         </div>
       </footer>

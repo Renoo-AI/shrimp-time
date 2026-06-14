@@ -4,109 +4,132 @@ import { motion, AnimatePresence } from 'motion/react';
 
 export default function MenuSection() {
   const [activeTab, setActiveTab] = useState<string>('seafood_boil');
-  const items = MENU_ITEMS.filter((item) => item.category === activeTab);
   const activeCat = MENU_CATEGORIES.find((c) => c.id === activeTab);
+  const items = MENU_ITEMS.filter((item) => item.category === activeTab);
 
   return (
-    <section id="menu" className="py-20 md:py-[100px] px-5 md:px-10" style={{ backgroundColor: '#F8F6F2' }}>
-      <div className="max-w-[800px] mx-auto">
-        {/* Heading */}
-        <div className="text-center mb-10">
-          <h2 className="font-serif text-[36px] md:text-[48px] font-bold text-brand-navy">
+    <section id="menu" className="relative py-28 md:py-36 px-8 md:px-16 lg:px-24 noise-section" style={{ backgroundColor: '#0F1A2E' }}>
+      <div className="max-w-[1400px] mx-auto">
+        {/* Header */}
+        <div className="mb-16 md:mb-24">
+          <motion.p
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="font-sans text-[10px] uppercase tracking-[0.3em] text-muted-dark mb-4 font-semibold"
+          >
+            L'Art Culinaire
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="font-serif text-5xl md:text-7xl font-black text-parchment tracking-tight"
+          >
             Notre Menu
-          </h2>
+          </motion.h2>
           {activeCat?.arabicLabel && (
-            <p className="text-sm text-brand-olive mt-1 font-sans tracking-wider uppercase">
+            <p className="font-sans text-sm text-muted-dark mt-2 tracking-wider">
               {activeCat.arabicLabel}
             </p>
           )}
-          <div
-            className="mx-auto mt-3"
-            style={{ width: '60px', height: '3px', backgroundColor: '#F5D300' }}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="accent-line mt-8"
+            style={{ transformOrigin: 'left' }}
           />
         </div>
 
-        {/* Tabs — horizontal scroll on mobile */}
-        <div className="flex gap-3 mb-10 overflow-x-auto pb-2 -mx-1 px-1 justify-center">
+        {/* Tabs — thin underline style, not pills */}
+        <div className="flex gap-10 md:gap-16 mb-16 overflow-x-auto pb-2">
           {MENU_CATEGORIES.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveTab(cat.id)}
-              className="shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold uppercase tracking-wider cursor-pointer transition-all duration-300 whitespace-nowrap"
-              style={{
-                backgroundColor: activeTab === cat.id ? '#F5D300' : 'transparent',
-                color: activeTab === cat.id ? '#0A1F3F' : '#0A1F3F',
-                border: activeTab === cat.id ? '2px solid #F5D300' : '1px solid #0A1F3F',
-              }}
-              onMouseEnter={(e) => {
-                if (activeTab !== cat.id) {
-                  e.currentTarget.style.backgroundColor = 'rgba(245,211,0,0.1)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeTab !== cat.id) {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }
-              }}
+              className="relative shrink-0 pb-3 font-sans text-sm uppercase tracking-[0.15em] font-semibold cursor-pointer transition-colors duration-200"
+              style={{ color: activeTab === cat.id ? '#E8E4DB' : '#7A8190' }}
             >
               {cat.label}
+              {activeTab === cat.id && (
+                <motion.span
+                  layoutId="menu-underline"
+                  className="absolute bottom-0 left-0 w-full h-px bg-amber"
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                />
+              )}
             </button>
           ))}
         </div>
 
-        {/* Menu Items */}
+        {/* Menu items — editorial list, not cards */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.4 }}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-0"
           >
             {items.map((item, i) => (
-              <div key={item.id}>
-                <div className="flex items-start gap-4 py-5">
-                  {/* Optional image thumbnail */}
-                  {item.image && (
-                    <div className="hidden sm:block w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-brand-navy/5">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xl shrink-0">{item.emoji}</span>
-                      <h3 className="font-serif text-lg font-bold text-brand-navy truncate">
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: i * 0.06 }}
+                className="group py-8 border-b border-white/[0.05] flex items-start gap-5"
+              >
+                {/* Image thumbnail — only on desktop for items with images */}
+                {item.image && (
+                  <div className="hidden md:block w-[72px] h-[72px] shrink-0 overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-500"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+
+                <div className="flex-1 min-w-0 flex items-start justify-between gap-4">
+                  <div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-sm opacity-50">{item.emoji}</span>
+                      <h3 className="font-serif text-lg md:text-xl font-bold text-parchment group-hover:text-amber transition-colors duration-300">
                         {item.name}
                       </h3>
                     </div>
-                    <p className="text-sm text-brand-muted ml-8">{item.description}</p>
+                    <p className="font-sans text-xs md:text-sm text-muted-dark mt-1.5 leading-relaxed max-w-[340px]">
+                      {item.description}
+                    </p>
                   </div>
-                  <span
-                    className="font-sans text-lg font-bold whitespace-nowrap pt-1 shrink-0"
-                    style={{ color: '#F5D300' }}
-                  >
-                    {item.price.toFixed(item.price % 1 !== 0 ? 1 : 0)} DT
+
+                  {/* Price — dramatic */}
+                  <span className="font-serif text-xl md:text-2xl font-black text-amber shrink-0 pt-0.5 tabular-nums">
+                    {item.price.toFixed(item.price % 1 !== 0 ? 1 : 0)}
+                    <span className="font-sans text-[10px] font-medium text-muted-dark ml-0.5 align-super">DT</span>
                   </span>
                 </div>
-                {i < items.length - 1 && (
-                  <div className="w-full" style={{ height: '1px', backgroundColor: '#E5E7EB' }} />
-                )}
-              </div>
+              </motion.div>
             ))}
-
-            {/* Sauce note for seafood boil */}
-            {activeTab === 'seafood_boil' && (
-              <div className="mt-6 p-4 rounded-lg border text-sm text-brand-muted text-center" style={{ borderColor: 'rgba(139,154,61,0.3)', backgroundColor: 'rgba(139,154,61,0.05)' }}>
-                🍋 {MENU_NOTE}
-              </div>
-            )}
           </motion.div>
         </AnimatePresence>
+
+        {/* Sauce note */}
+        {activeTab === 'seafood_boil' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-12 py-5 px-0 border-l-2 border-amber/20 pl-6"
+          >
+            <p className="font-sans text-xs text-muted-dark tracking-wide">{MENU_NOTE}</p>
+          </motion.div>
+        )}
       </div>
     </section>
   );
