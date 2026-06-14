@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { BRANCHES } from '../data';
+import { ChefHat, MapPin, Calendar, Phone, Menu, X } from 'lucide-react';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -57,11 +58,11 @@ export default function Navbar() {
           
           {/* Logo Stacked (English + Arabic Tagline) */}
           <button onClick={() => go('hero')} className="flex flex-col items-start text-left cursor-pointer group">
-            <span className="font-serif font-black text-lg md:text-xl text-white tracking-wider flex items-center gap-1.5 transition-transform group-hover:scale-[1.02]">
-              <span>🦐</span>
+            <span className="font-serif font-black text-lg md:text-xl text-white tracking-wider flex items-center gap-2 transition-transform group-hover:scale-[1.02]">
+              <img src="/logo.png" alt="" className="h-7 w-auto object-contain brightness-110" />
               <span>SHRIMP TIME</span>
             </span>
-            <span className="text-[#F5D300] text-[11px] md:text-xs font-semibold tracking-widest font-sans pl-6">
+            <span className="text-[#F5D300] text-[11px] md:text-xs font-semibold tracking-widest font-sans pl-9">
               عيش التجربة
             </span>
           </button>
@@ -96,7 +97,7 @@ export default function Navbar() {
               href={`tel:${BRANCHES[0].phone}`}
               className="text-xs uppercase font-extrabold tracking-[0.2em] text-[#F5D300] hover:text-[#E0C200] transition-colors flex items-center gap-1.5"
             >
-              <span>📞</span>
+              <Phone size={13} />
               <span>{BRANCHES[0].phoneDisplay}</span>
             </a>
           </div>
@@ -109,7 +110,7 @@ export default function Navbar() {
             <span className="font-sans font-bold text-xs tracking-wider">
               {open ? 'CLOSE' : 'MENU'}
             </span>
-            <span className="text-sm">{open ? '✕' : '☰'}</span>
+            {open ? <X size={14} /> : <Menu size={14} />}
           </button>
 
         </div>
@@ -123,28 +124,28 @@ export default function Navbar() {
                   onClick={() => go('menu')}
                   className="flex items-center gap-3 text-white font-bold text-sm tracking-widest py-3 border-b border-white/5 hover:text-[#F5D300] text-left cursor-pointer"
                 >
-                  <span>🍤</span>
+                  <ChefHat size={16} className="text-[#F5D300]" />
                   <span>MENU</span>
                 </button>
                 <button
                   onClick={() => go('branches')}
                   className="flex items-center gap-3 text-white font-bold text-sm tracking-widest py-3 border-b border-white/5 hover:text-[#F5D300] text-left cursor-pointer"
                 >
-                  <span>📍</span>
+                  <MapPin size={16} className="text-[#F5D300]" />
                   <span>BRANCHES</span>
                 </button>
                 <button
                   onClick={() => go('reservation')}
                   className="flex items-center gap-3 text-white font-bold text-sm tracking-widest py-3 border-b border-white/5 hover:text-[#F5D300] text-left cursor-pointer"
                 >
-                  <span>📅</span>
+                  <Calendar size={16} className="text-[#F5D300]" />
                   <span>BOOK NOW</span>
                 </button>
                 <a
                   href={`tel:${BRANCHES[0].phone}`}
                   className="flex items-center gap-3 text-[#F5D300] font-bold text-sm tracking-widest py-3 hover:text-[#E0C200] text-left"
                 >
-                  <span>📞</span>
+                  <Phone size={16} className="text-[#F5D300]" />
                   <span>CALL +216 {BRANCHES[0].phoneDisplay}</span>
                 </a>
               </div>

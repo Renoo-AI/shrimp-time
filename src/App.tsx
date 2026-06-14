@@ -5,6 +5,7 @@ import BranchesSection from './components/BranchesSection';
 import ReservationSection from './components/ReservationSection';
 import { INSTAGRAM_URL, BRANCHES, RESTAURANT_EMAIL, RESTAURANT_HOURS } from './data';
 import { motion } from 'motion/react';
+import { Phone, Mail, MapPin, Instagram, Facebook, Star, Citrus, Calendar, Flame } from 'lucide-react';
 
 const VID = [1, 2, 3][Math.floor(Math.random() * 3)];
 const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -88,8 +89,14 @@ export default function App() {
             className="w-12 h-[2px] rounded-full mt-6" style={{ background: 'rgba(245,211,0,0.4)' }} />
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.1, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col sm:flex-row gap-4 mt-14">
-            <button onClick={() => go('menu')} className="btn-yellow px-10 py-4 text-base">🦐 Voir le Menu</button>
-            <button onClick={() => go('reservation')} className="btn-ghost text-white border-white/40 hover:border-white hover:bg-white/10 px-10 py-4 text-base">📅 Réserver une Table</button>
+            <button onClick={() => go('menu')} className="btn-yellow px-10 py-4 text-base flex items-center gap-2">
+              <Flame size={16} />
+              <span>Voir le Menu</span>
+            </button>
+            <button onClick={() => go('reservation')} className="btn-ghost text-white border-white/40 hover:border-white hover:bg-white/10 px-10 py-4 text-base flex items-center gap-2">
+              <Calendar size={16} />
+              <span>Réserver une Table</span>
+            </button>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }}
             className="mt-20 md:mt-28 flex flex-col items-center gap-3">
@@ -121,24 +128,45 @@ export default function App() {
             </div>
             <div>
               <h4 className="label-s text-white/50 mb-4">Contact</h4>
-              <p className="text-sm text-white/60 mb-2">📞 {BRANCHES[0].phoneDisplay}</p>
-              <p className="text-sm text-white/60 mb-2">✉️ {RESTAURANT_EMAIL}</p>
-              <p className="text-sm text-white/60">📍 {BRANCHES.map(b => b.name).join(' · ')}</p>
+              <p className="text-sm text-white/60 mb-2.5 flex items-center gap-2">
+                <Phone size={14} className="text-[#F5D300]" />
+                <span>{BRANCHES[0].phoneDisplay}</span>
+              </p>
+              <p className="text-sm text-white/60 mb-2.5 flex items-center gap-2">
+                <Mail size={14} className="text-[#F5D300]" />
+                <span>{RESTAURANT_EMAIL}</span>
+              </p>
+              <p className="text-sm text-white/60 flex items-center gap-2">
+                <MapPin size={14} className="text-[#F5D300]" />
+                <span>{BRANCHES.map(b => b.name).join(' · ')}</span>
+              </p>
             </div>
             <div>
               <h4 className="label-s text-white/50 mb-4">Horaires</h4>
               <p className="text-sm text-white/60 mb-4">{RESTAURANT_HOURS}</p>
               <div className="flex gap-4">
-                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="text-xs text-white/40 hover:text-yellow transition-colors font-sans font-semibold">📸 Instagram</a>
-                <a href="https://www.facebook.com/profile.php?id=61559768967974" target="_blank" rel="noopener noreferrer" className="text-xs text-white/40 hover:text-yellow transition-colors font-sans font-semibold">🟦 Facebook</a>
+                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="text-xs text-white/40 hover:text-yellow transition-colors font-sans font-semibold flex items-center gap-1.5">
+                  <Instagram size={13} />
+                  <span>Instagram</span>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61559768967974" target="_blank" rel="noopener noreferrer" className="text-xs text-white/40 hover:text-yellow transition-colors font-sans font-semibold flex items-center gap-1.5">
+                  <Facebook size={13} />
+                  <span>Facebook</span>
+                </a>
               </div>
             </div>
           </div>
           <div className="border-t border-white/[0.06] pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2 text-xs text-white/30">
-              <span>⭐ 4.4 ★ (394 avis)</span>
+              <span className="flex items-center gap-1">
+                <Star size={12} className="text-[#F5D300] fill-[#F5D300] align-middle" />
+                <span>4.4 ★ (394 avis)</span>
+              </span>
               <span className="text-white/15">·</span>
-              <span>🍋 Fresh daily</span>
+              <span className="flex items-center gap-1">
+                <Citrus size={12} className="text-[#F5D300]" />
+                <span>Fresh daily</span>
+              </span>
             </div>
             <p className="text-xs text-white/20 font-sans">
               &copy; {new Date().getFullYear()} Shrimp Time. Tous droits réservés. <span className="text-white/10">·</span> <span className="text-white/15">Mentions légales</span>
@@ -150,7 +178,7 @@ export default function App() {
       {/* Floating Sound Toggle */}
       <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
         <div className="bg-[#0A1F3F]/80 border border-[#F5D300]/30 backdrop-blur-md text-white text-[10px] font-sans font-bold tracking-wider py-2 px-3 rounded-lg shadow-xl select-none hidden sm:block">
-          {isMuted ? '🔇 SOUND OFF' : '🔊 SOUND ON'}
+          {isMuted ? 'SOUND OFF' : 'SOUND ON'}
         </div>
         <button
           onClick={toggleMute}

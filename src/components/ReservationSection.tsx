@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { BRANCHES, TIME_SLOTS, RESERVATION_FORM_INITIAL } from '../data';
 import { motion } from 'motion/react';
+import { User, Phone, Users, Calendar, Clock, MapPin, MessageSquare, Cake, Heart, ShieldAlert, Wine, Star, Flame, Check } from 'lucide-react';
 
 export default function ReservationSection() {
   const [f, setF] = useState({ ...RESERVATION_FORM_INITIAL });
@@ -86,40 +87,40 @@ export default function ReservationSection() {
           
           {/* Header Banners */}
           <div className="text-center mb-8">
-            <div className="text-sm md:text-base tracking-widest text-[#F5D300]/80 select-none mb-4 truncate">
-              🦐🍋🦐🍋🦐🍋🦐🍋🦐🍋🦐🍋🦐🍋🦐🍋🦐🍋🦐
-            </div>
+            <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#F5D300]/30 to-transparent mb-6" />
             
-            <h2 className="font-serif font-black text-3xl md:text-5xl text-white tracking-tight uppercase mb-2">
-              🔥 Crack Open Your Table 🔥
+            <h2 className="font-serif font-black text-3xl md:text-5xl text-white tracking-tight uppercase mb-2 flex items-center justify-center gap-2.5">
+              <Flame size={32} className="text-[#F5D300]" />
+              <span>Crack Open Your Table</span>
+              <Flame size={32} className="text-[#F5D300]" />
             </h2>
             <p className="text-xs md:text-sm text-white/50 tracking-wider font-sans italic">
               &ldquo;Fresh from the boil — straight to your seat&rdquo;
             </p>
 
-            <div className="text-sm md:text-base tracking-widest text-[#F5D300]/80 select-none mt-4 truncate">
-              🦐🍋🦐🍋🦐🍋🦐🍋🦐🍋🦐🍋🦐🍋🦐🍋🦐🍋🦐
-            </div>
+            <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#F5D300]/30 to-transparent mt-6" />
           </div>
 
           {/* INNER FORM CONTAINER */}
-          <div className="border border-white/10 rounded-2xl p-4 md:p-8 bg-[#091b35] relative">
-            <span className="text-4xl absolute -top-6 left-1/2 -translate-x-1/2 bg-[#091b35] px-3 select-none">
-              🦐
-            </span>
+          <div className="border border-white/10 rounded-2xl p-4 md:p-8 bg-[#091b35] relative mt-10">
+            <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#091b35] p-3 rounded-full border border-white/10">
+              <img src="/logo.png" alt="" className="h-8 w-auto object-contain brightness-110" />
+            </div>
 
             <form onSubmit={submit} className="flex flex-col gap-8 mt-4" noValidate>
               
               {/* FIELDSET 1: WHO'S EATING? */}
               <fieldset className="border border-white/20 rounded-xl p-5 md:p-6 bg-black/10">
-                <legend className="px-3 font-serif font-black tracking-widest text-[#F5D300] uppercase text-xs md:text-sm">
-                  👤 WHO&apos;S EATING?
+                <legend className="px-3 font-serif font-black tracking-widest text-[#F5D300] uppercase text-xs md:text-sm flex items-center gap-1.5">
+                  <User size={14} />
+                  <span>WHO&apos;S EATING?</span>
                 </legend>
 
                 <div className="flex flex-col gap-5">
                   <div>
-                    <label className="block text-xs font-semibold text-white/70 uppercase tracking-widest mb-2">
-                      👤 Full name
+                    <label className="block text-xs font-semibold text-white/70 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                      <User size={12} className="text-white/40" />
+                      <span>Full name</span>
                     </label>
                     <input
                       type="text"
@@ -137,8 +138,9 @@ export default function ReservationSection() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-white/70 uppercase tracking-widest mb-2">
-                      📞 Phone number (WhatsApp)
+                    <label className="block text-xs font-semibold text-white/70 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                      <Phone size={12} className="text-white/40" />
+                      <span>Phone number (WhatsApp)</span>
                     </label>
                     <div className="flex gap-2">
                       <span className="flex items-center px-4 rounded-xl text-sm font-semibold text-white/50 bg-white/[0.04] border border-white/[0.08]" style={{ whiteSpace: 'nowrap' }}>
@@ -164,15 +166,17 @@ export default function ReservationSection() {
 
               {/* FIELDSET 2: YOUR SEAFEAST */}
               <fieldset className="border border-white/20 rounded-xl p-5 md:p-6 bg-black/10">
-                <legend className="px-3 font-serif font-black tracking-widest text-[#F5D300] uppercase text-xs md:text-sm">
-                  🍤 YOUR SEAFEAST
+                <legend className="px-3 font-serif font-black tracking-widest text-[#F5D300] uppercase text-xs md:text-sm flex items-center gap-1.5">
+                  <Flame size={14} />
+                  <span>YOUR SEAFEAST</span>
                 </legend>
 
                 {/* Pickers Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                   <div>
-                    <label className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-2">
-                      👥 How many?
+                    <label className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                      <Users size={12} className="text-white/40" />
+                      <span>How many?</span>
                     </label>
                     <select
                       value={f.guests}
@@ -193,8 +197,9 @@ export default function ReservationSection() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-2">
-                      📅 Pick a date
+                    <label className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                      <Calendar size={12} className="text-white/40" />
+                      <span>Pick a date</span>
                     </label>
                     <input
                       type="date"
@@ -212,8 +217,9 @@ export default function ReservationSection() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-2">
-                      ⏰ Time
+                    <label className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                      <Clock size={12} className="text-white/40" />
+                      <span>Time</span>
                     </label>
                     <select
                       value={f.time}
@@ -236,8 +242,9 @@ export default function ReservationSection() {
 
                 {/* Branch Selection */}
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-3">
-                    📍 Which branch?
+                  <label className="block text-xs font-semibold text-white/60 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                    <MapPin size={12} className="text-white/40" />
+                    <span>Which branch?</span>
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {BRANCHES.map((b) => (
@@ -251,9 +258,12 @@ export default function ReservationSection() {
                             : 'border-white/10 bg-white/[0.02] text-white hover:border-white/20'
                         }`}
                       >
-                        <span className="text-xl mb-2 flex items-center justify-between">
-                          <span>📍 {b.name.toUpperCase()}</span>
-                          <span>{f.branch === b.id ? '🟢' : '⚪'}</span>
+                        <span className="text-sm font-bold uppercase tracking-wider mb-2 flex items-center justify-between">
+                          <span className="flex items-center gap-1.5">
+                            <MapPin size={14} className={f.branch === b.id ? 'text-[#0A1F3F]' : 'text-[#F5D300]'} />
+                            <span>{b.name}</span>
+                          </span>
+                          {f.branch === b.id ? <Check size={14} className="text-[#0A1F3F]" /> : <span className="w-3 h-3 rounded-full border border-white/30" />}
                         </span>
                         <span className={`text-[11px] font-sans ${f.branch === b.id ? 'text-[#0A1F3F]/70' : 'text-white/40'}`}>
                           {b.address}
@@ -266,34 +276,45 @@ export default function ReservationSection() {
 
               {/* FIELDSET 3: SPECIAL REQUESTS */}
               <fieldset className="border border-white/20 rounded-xl p-5 md:p-6 bg-black/10">
-                <legend className="px-3 font-serif font-black tracking-widest text-[#F5D300] uppercase text-xs md:text-sm">
-                  💬 SPECIAL REQUESTS (OPTIONAL)
+                <legend className="px-3 font-serif font-black tracking-widest text-[#F5D300] uppercase text-xs md:text-sm flex items-center gap-1.5">
+                  <MessageSquare size={14} />
+                  <span>SPECIAL REQUESTS (OPTIONAL)</span>
                 </legend>
 
                 {/* Helper Tags */}
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {['🎂 Birthday', '💍 Proposal', '🚫 Allergies', '🍷 Wine preference'].map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() =>
-                        s(
-                          'requests',
-                          f.requests.includes(t)
-                            ? f.requests.replace(t, '').replace(/\s+/g, ' ').trim()
-                            : (f.requests + ' ' + t).trim()
-                        )
-                      }
-                      className="px-3 py-1.5 rounded-full text-xs font-semibold font-sans transition-all border cursor-pointer"
-                      style={{
-                        background: f.requests.includes(t) ? 'rgba(245,211,0,0.15)' : 'rgba(255,255,255,0.03)',
-                        borderColor: f.requests.includes(t) ? '#F5D300' : 'rgba(255,255,255,0.1)',
-                        color: f.requests.includes(t) ? '#F5D300' : 'rgba(255,255,255,0.5)',
-                      }}
-                    >
-                      {t}
-                    </button>
-                  ))}
+                  {[
+                    { label: 'Birthday', icon: <Cake size={11} /> },
+                    { label: 'Proposal', icon: <Heart size={11} /> },
+                    { label: 'Allergies', icon: <ShieldAlert size={11} /> },
+                    { label: 'Wine preference', icon: <Wine size={11} /> }
+                  ].map((item) => {
+                    const tag = item.label;
+                    const isSelected = f.requests.includes(tag);
+                    return (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() =>
+                          s(
+                            'requests',
+                            isSelected
+                              ? f.requests.replace(tag, '').replace(/\s+/g, ' ').trim()
+                              : (f.requests + ' ' + tag).trim()
+                          )
+                        }
+                        className="px-3 py-1.5 rounded-full text-xs font-semibold font-sans transition-all border cursor-pointer flex items-center gap-1"
+                        style={{
+                          background: isSelected ? 'rgba(245,211,0,0.15)' : 'rgba(255,255,255,0.03)',
+                          borderColor: isSelected ? '#F5D300' : 'rgba(255,255,255,0.1)',
+                          color: isSelected ? '#F5D300' : 'rgba(255,255,255,0.5)',
+                        }}
+                      >
+                        {item.icon}
+                        <span>{tag}</span>
+                      </button>
+                    );
+                  })}
                 </div>
 
                 <textarea
@@ -312,16 +333,19 @@ export default function ReservationSection() {
 
               {/* FIELDSET 4: CRACK THE BOIL CTA BOX */}
               <div className="border border-white/10 rounded-xl p-4 md:p-6 bg-[#07162c]/80 text-center">
-                <div className="text-white/60 font-bold text-xs mb-4 tracking-[0.2em] flex items-center justify-center gap-2 select-none">
-                  🦐 🔥 🍋 CRACK THE BOIL 🍋 🔥 🦐
+                <div className="text-white/60 font-bold text-xs mb-4 tracking-[0.2em] flex items-center justify-center gap-1.5 select-none uppercase">
+                  <Flame size={12} className="text-[#F5D300]" />
+                  <span>Crack The Boil</span>
+                  <Flame size={12} className="text-[#F5D300]" />
                 </div>
                 
                 <button
                   type="submit"
                   className="w-full border-[6px] border-double border-[#0A1F3F] bg-[#F5D300] hover:bg-[#E0C200] text-[#0A1F3F] rounded-xl p-5 md:p-6 font-serif font-black uppercase transition-all duration-300 shadow-xl cursor-pointer"
                 >
-                  <div className="text-lg md:text-2xl tracking-wider mb-1">
-                    🍤 Reserve My Table Now 🍤
+                  <div className="text-lg md:text-2xl tracking-wider mb-1 flex items-center justify-center gap-2">
+                    <Calendar size={20} />
+                    <span>Reserve My Table Now</span>
                   </div>
                   <div className="text-xs font-semibold opacity-90 tracking-wide font-sans normal-case">
                     You&apos;ll receive WhatsApp confirmation in 30s
@@ -332,16 +356,18 @@ export default function ReservationSection() {
               {/* Bottom Badges */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="border border-white/10 rounded-xl p-4 bg-white/[0.01] text-center sm:text-left hover:border-white/20 transition-all duration-300">
-                  <span className="font-serif font-black text-sm text-[#F5D300] block mb-0.5">
-                    💬 WhatsApp Ready
+                  <span className="font-serif font-black text-sm text-[#F5D300] flex items-center justify-center sm:justify-start gap-1.5 mb-0.5">
+                    <MessageSquare size={14} />
+                    <span>WhatsApp Ready</span>
                   </span>
                   <span className="text-xs text-white/50 font-sans">
                     Confirmation in seconds
                   </span>
                 </div>
                 <div className="border border-white/10 rounded-xl p-4 bg-white/[0.01] text-center sm:text-left hover:border-white/20 transition-all duration-300">
-                  <span className="font-serif font-black text-sm text-[#F5D300] block mb-0.5">
-                    🎉 No Deposit Required
+                  <span className="font-serif font-black text-sm text-[#F5D300] flex items-center justify-center sm:justify-start gap-1.5 mb-0.5">
+                    <Check size={14} />
+                    <span>No Deposit Required</span>
                   </span>
                   <span className="text-xs text-white/50 font-sans">
                     Free cancellation up to 2h before
@@ -364,8 +390,10 @@ export default function ReservationSection() {
 
           {/* Social Proof Footer */}
           <div className="mt-8 text-center border-t border-white/10 pt-8 text-white/40 text-xs md:text-sm flex flex-col gap-2">
-            <p className="font-sans font-semibold">
-              ⭐ 394 happy crustaceans served this week ⭐
+            <p className="font-sans font-semibold flex items-center justify-center gap-1.5">
+              <Star size={14} className="text-[#F5D300] fill-[#F5D300]" />
+              <span>394 happy crustaceans served this week</span>
+              <Star size={14} className="text-[#F5D300] fill-[#F5D300]" />
             </p>
             <p className="font-sans italic opacity-85">
               &ldquo;Best shrimp in Tunisia — the boil is INSANE&rdquo; — Karim, La Marsa
