@@ -1,501 +1,367 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
-import ShrimpLogo from './components/ShrimpLogo';
-import MenuSection from './components/MenuSection';
-import BranchesSection from './components/BranchesSection';
-import ReservationSection from './components/ReservationSection';
-import { INSTAGRAM_URL, MENU_ITEMS } from './data';
-import { BookOpen, Calendar, Phone, Mail, MapPin, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
+const MENU_DATA = {
+  entrées: [
+    { name: 'Crevettes grillées', price: 28, desc: 'Sauce cocktail, citron, salade verte' },
+    { name: 'Calamars frits', price: 22, desc: 'Panure légère, sauce tartare' },
+    { name: 'Huîtres fraîches', price: 35, desc: 'Citron, vinaigre échalote' },
+  ],
+  plats: [
+    { name: 'Grilled Fish du jour', price: 45, desc: 'Légumes de saison, riz safrané' },
+    { name: 'Pâtes aux crevettes', price: 38, desc: 'Sauce crème, tomates confites' },
+    { name: 'Homard grillé', price: 120, desc: 'Beurre citronné, herbes fraîches' },
+  ],
+  desserts: [
+    { name: 'Fondant au chocolat', price: 15, desc: 'Cœur coulant, glace vanille' },
+    { name: 'Tarte au citron meringuée', price: 14, desc: 'Meringue italienne' },
+    { name: 'Glace artisanale', price: 12, desc: 'Parfums du moment' },
+  ]
+};
+
+const BRANCHES = [
+  { id: 'marsa', name: 'LA MARSA', desc: 'Plage, face Zéphyr', phone: '216 71 234 567' },
+  { id: 'aouina', name: "L'AOUINA", desc: 'Sous le Centre Médical Aïcha', phone: '216 71 234 568' }
+];
+
 export default function App() {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
-  const [loading, setLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const duration = 1000; // 1.0 second loading time - snappy and premium!
-    const intervalTime = 20;
-    const step = 100 / (duration / intervalTime);
-    
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        const next = prev + step;
-        if (next >= 100) {
-          clearInterval(timer);
-          setTimeout(() => {
-            setLoading(false);
-          }, 300);
-          return 100;
-        }
-        return next;
-      });
-    }, intervalTime);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    const handlePopState = () => {
-      setCurrentPath(window.location.pathname);
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  const navigateTo = (path: string, scrollToId?: string) => {
-    window.history.pushState({}, '', path);
-    setCurrentPath(path);
-    if (scrollToId) {
-      setTimeout(() => {
-        const el = document.getElementById(scrollToId);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'entrées' | 'plats' | 'desserts'>('plats');
+  const [formState, setFormState] = useState({
+    branch: 'marsa',
+    phone: '',
+    guests: '2',
+    date: '',
+    time: '19:00'
+  });
+  const [formErrors, setFormErrors] = useState<{phone?: string}>({});
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const scrollToId = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
+    setIsMobileMenuOpen(false);
   };
 
-  // Curated spotlight items for landing preview
-  const spotlightItems = MENU_ITEMS.filter(item => 
-    item.id === 'e1' || item.id === 'p1' || item.id === 'p2'
-  );
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormState({ ...formState, [e.target.name]: e.target.value });
+    if (formErrors.phone && e.target.name === 'phone') {
+      setFormErrors({});
+    }
+  };
+
+  const submitReservation = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validate phone
+    const cleanPhone = formState.phone.replace(/[\s+]/g, '');
+    let isValid = false;
+
+    // Check if it starts with 216 and has 8 digits after, or just 8 digits starting with 2,5,9 etc
+    if (/^(216)?[2597][0-9]{7}$/.test(cleanPhone)) {
+        isValid = true;
+    }
+
+    if (!isValid) {
+      setFormErrors({ phone: 'Numéro invalide. Ex: 29 123 456' });
+      return;
+    }
+
+    const branchObj = BRANCHES.find(b => b.id === formState.branch) || BRANCHES[0];
+    const targetPhone = branchObj.phone.replace(/[\s+]/g, '');
+
+    const message = `Bonjour Shrimp Time,
+Réservation pour ${formState.guests} personnes
+le ${formState.date.split('-').reverse().join('/')} à ${formState.time}
+à la branche ${branchObj.name}
+Tel: ${formState.phone}`;
+
+    const url = `https://wa.me/${targetPhone}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+
+    setShowSuccess(true);
+    setFormState({ branch: 'marsa', phone: '', guests: '2', date: '', time: '19:00' });
+    setTimeout(() => setShowSuccess(false), 3000);
+  };
 
   return (
-    <div className="min-h-screen premium-gradient-bg selection:bg-brand-yellow/30 relative text-white antialiased font-sans">
-      
-      {/* 0. Preloader fake loading screen */}
+    <div className="min-h-screen bg-brand-white text-brand-navy font-sans">
+
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 h-[70px] nav-blur z-50 px-4 md:px-10 flex items-center justify-between">
+        <div className="h-10 cursor-pointer" onClick={() => window.scrollTo(0, 0)}>
+          <img src="/logo.png" alt="Shrimp Time logo" className="h-full object-contain" />
+        </div>
+
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-8 text-white font-medium">
+          <button onClick={() => window.scrollTo(0, 0)} className="hover:text-brand-yellow transition-colors cursor-pointer">Accueil</button>
+          <button onClick={() => scrollToId('menu')} className="hover:text-brand-yellow transition-colors cursor-pointer">Menu</button>
+          <button onClick={() => scrollToId('branches')} className="hover:text-brand-yellow transition-colors cursor-pointer">Branches</button>
+          <button onClick={() => scrollToId('reservation')} className="hover:text-brand-yellow transition-colors cursor-pointer">Réservation</button>
+        </div>
+
+        {/* Mobile Toggle */}
+        <button
+          className="md:hidden text-white cursor-pointer"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+      </nav>
+
+      {/* Mobile Nav Menu */}
       <AnimatePresence>
-        {loading && (
-          <motion.div
-            key="preloader"
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center select-none"
-          >
-            {/* Top panel */}
-            <motion.div
-              initial={{ y: 0 }}
-              exit={{ y: '-100%' }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute top-0 left-0 w-full h-1/2 bg-[#001C33] border-b border-brand-yellow/20"
-            />
-            {/* Bottom panel */}
-            <motion.div
-              initial={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute bottom-0 left-0 w-full h-1/2 bg-[#001C33]"
-            />
-
-            {/* Central Content */}
-            <motion.div
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="relative z-10 flex flex-col items-center max-w-xs w-full px-6 text-center"
-            >
-              {/* Pulsing Logo & Glow */}
-              <motion.div
-                animate={{ 
-                  scale: [0.95, 1.05, 0.95],
-                }}
-                transition={{ 
-                  duration: 2, 
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="mb-8 relative"
-              >
-                {/* Golden background aura */}
-                <div className="absolute inset-0 bg-brand-yellow/15 rounded-full blur-xl scale-150 animate-pulse pointer-events-none" />
-                <ShrimpLogo size={100} showText={false} />
-              </motion.div>
-              
-              <motion.h2 
-                initial={{ opacity: 0, letterSpacing: '0.1em' }}
-                animate={{ opacity: 1, letterSpacing: '0.3em' }}
-                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                className="font-serif text-2xl font-black text-white uppercase mb-2 pr-[-0.3em]"
-              >
-                Shrimp Time
-              </motion.h2>
-              <motion.p 
-                initial={{ opacity: 0, letterSpacing: '0.15em' }}
-                animate={{ opacity: 0.6, letterSpacing: '0.3em' }}
-                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-                className="text-[9px] text-brand-green font-arabic font-black mb-10 pr-[-0.3em]"
-              >
-                عيش التجربة
-              </motion.p>
-              
-              <div className="w-full relative">
-                {/* Track */}
-                <div className="h-[2px] w-full bg-white/10 rounded-full overflow-hidden relative">
-                  {/* Active progress indicator */}
-                  <div 
-                    className="absolute left-0 top-0 h-full bg-brand-yellow rounded-full shadow-[0_0_8px_#EAD11B] transition-all duration-75"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Split panel laser line */}
-            <motion.div
-              initial={{ scaleX: 0, opacity: 0 }}
-              animate={{ scaleX: 1, opacity: 0.8 }}
-              exit={{ scaleX: 0, opacity: 0 }}
-              transition={{ 
-                animate: { duration: 0.8, ease: "easeOut" },
-                exit: { duration: 0.5, ease: "easeInOut" }
-              }}
-              className="absolute left-10 right-10 h-[1px] bg-brand-yellow/30 z-20"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* 1. Global Floating Navbar */}
-      <Navbar currentPath={currentPath} navigateTo={navigateTo} />
-
-      {/* Main site content with parallax scale and blur transition */}
-      <motion.div
-        animate={loading ? { scale: 0.96, opacity: 0.3, filter: 'blur(8px)' } : { scale: 1, opacity: 1, filter: 'blur(0px)' }}
-        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-        className="min-h-screen w-full relative"
-      >
-
-      {/* 2. Visual Ambient Core Background (Restrained, elegant, non-neon glows) */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {/* Soft elegant amber wash */}
-        <div className="absolute top-[8%] right-[12%] w-[450px] h-[450px] bg-brand-yellow/10 rounded-full blur-[150px]" />
-        {/* Soft elegant sea mint wash */}
-        <div className="absolute bottom-[15%] left-[5%] w-[500px] h-[500px] bg-brand-green/5 rounded-full blur-[150px]" />
-      </div>
-
-      <AnimatePresence mode="wait">
-      {currentPath === '/menu' ? (
-        /* ==================== DEDICATED MENU PAGE ==================== */
+      {isMobileMenuOpen && (
         <motion.div 
-          key="menu-page"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="pt-32 pb-4 relative z-10"
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="md:hidden fixed top-[70px] left-0 right-0 bg-brand-navy/95 backdrop-blur-md z-40 flex flex-col p-6 gap-6 text-white border-t border-white/10 shadow-xl"
         >
-          {/* Elegant header */}
-          <div className="pt-12 pb-16 px-4 max-w-4xl mx-auto text-center relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-yellow/30 bg-brand-navy/60 text-[10px] md:text-xs font-bold tracking-widest text-brand-yellow uppercase mb-6 shadow-sm">
-              <span>Notre Carte Gastronomique</span>
-            </div>
-            <h1 className="font-serif text-4xl md:text-6xl font-black text-white tracking-tight leading-tight">
-              Sensation de la Mer
-            </h1>
-            <p className="text-white/60 text-xs md:text-sm max-w-xl mx-auto mt-4 leading-relaxed font-sans uppercase tracking-wider">
-              Une fresque gourmande cuisinée à la perfection méditerranéenne
-            </p>
-            <div className="w-16 h-[1.5px] bg-brand-yellow/40 mx-auto mt-6" />
-          </div>
-
-          <MenuSection />
-        </motion.div>
-      ) : (
-        /* ==================== HOMEPAGE / LANDING PAGE ==================== */
-        <motion.div 
-          key="home-page"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-        >
-          {/* 3. Hero Section */}
-          <section 
-            id="hero" 
-            className="min-h-screen relative flex flex-col justify-center items-center px-4 pt-24 pb-16 overflow-hidden"
-          >
-            {/* Ambient Video Background */}
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              webkit-playsinline="true"
-              className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
-            >
-              <source src="https://assets.mixkit.co/videos/preview/mixkit-slowly-drifting-water-surface-42938-large.mp4" type="video/mp4" />
-            </video>
-
-            {/* Dark elegant premium overlay */}
-            <div className="absolute inset-0 bg-brand-navy/85 z-10 pointer-events-none" />
-
-            {/* Soft grid background pattern */}
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1.5px,transparent_1.5px),linear-gradient(90deg,rgba(255,255,255,0.01)_1.5px,transparent_1.5px)] bg-[size:40px_40px] opacity-15 pointer-events-none z-10" />
-
-            {/* Seamless wave divider separator */}
-            <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20 transform rotate-180">
-              <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-16 fill-[#06152B]">
-                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V0C26.9,8.75,72.05,21.84,121.39,30.25,184,41,257.39,68.32,321.39,56.44Z" />
-              </svg>
-            </div>
-
-            {/* Core Header info stack */}
-            <div className="max-w-4xl mx-auto flex flex-col items-center select-none text-center relative z-20 mt-4 px-4">
-              
-              {/* Regional tag locator */}
-              <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-yellow/20 bg-brand-navy/90 text-[10px] md:text-xs font-bold tracking-widest text-brand-yellow uppercase mb-8 shadow-md"
-              >
-                <MapPin size={12} className="text-brand-yellow" />
-                <span>La Marsa</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-yellow opacity-40 animate-pulse" />
-                <span>L'Aouina</span>
-              </motion.div>
-
-              {/* Title Header text string & line */}
-              <motion.h1 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="font-serif text-5xl md:text-8xl font-black text-white tracking-tight uppercase drop-shadow-2xl"
-              >
-                Shrimp Time
-              </motion.h1>
-
-              {/* Gold/White Separation Line */}
-              <motion.div 
-                initial={{ opacity: 0, scaleX: 0 }}
-                animate={{ opacity: 0.8, scaleX: 1 }}
-                transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-                className="w-48 md:w-64 h-[2px] premium-gold-gradient my-5 md:my-6 rounded-full" 
-              />
-
-              {/* Main Subtitle Tagline */}
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="font-serif italic text-white/90 text-2xl md:text-4xl tracking-wide max-w-xl mx-auto leading-relaxed drop-shadow-lg"
-              >
-                Live the <span className="text-gold-gradient font-black">expérience</span>
-              </motion.p>
-
-              {/* Description Paragraph */}
-              <motion.p 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.7 }}
-                className="text-white/80 text-xs md:text-sm max-w-lg mx-auto mt-4 font-sans leading-relaxed tracking-wider uppercase font-semibold"
-              >
-                Fruits de mer frais, ambiance premium, deux branches à Tunis
-              </motion.p>
-
-              {/* Action Buttons: Gold with Navy Text, 8px border radius */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10 w-full sm:w-auto px-4 z-30"
-              >
-                <button
-                  onClick={() => navigateTo('/menu')}
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-[8px] font-bold uppercase tracking-widest text-xs text-brand-navy premium-gold-gradient hover:opacity-90 active:scale-95 transition-all duration-300 cursor-pointer shadow-lg shadow-brand-yellow/20 inline-flex items-center justify-center gap-2"
-                >
-                  <BookOpen size={14} />
-                  <span>Voir le Menu</span>
-                </button>
-                <button
-                  onClick={() => scrollToId('reservation')}
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-[8px] font-bold uppercase tracking-widest text-xs text-white border border-white/35 hover:border-brand-yellow hover:text-brand-yellow hover:bg-white/5 active:scale-95 transition-all duration-300 cursor-pointer inline-flex items-center justify-center gap-2"
-                >
-                  <Calendar size={14} />
-                  <span>Réserver</span>
-                </button>
-              </motion.div>
-
-              {/* Decorative scroll prompt helper */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.7 }}
-                transition={{ duration: 1, delay: 1.2 }}
-                onClick={() => scrollToId('menu')}
-                className="hidden md:flex flex-col items-center gap-2 mt-16 cursor-pointer hover:opacity-100 transition-opacity"
-              >
-                <span className="text-[10px] uppercase tracking-widest text-white/40 font-bold">Explorer l'établissement</span>
-                <div className="w-6 h-10 rounded-full border border-white/15 p-1 flex justify-center">
-                  <div className="w-1.5 h-2 bg-brand-yellow rounded-full animate-bounce mt-1" />
-                </div>
-              </motion.div>
-
-            </div>
-          </section>
-
-          {/* 4. Home Menu Curator (Elegant design-centric spotlight) */}
-          <section id="menu" className="py-24 px-4 premium-gradient-bg relative z-10">
-            <div className="max-w-6xl mx-auto">
-              
-              <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8 }}
-                className="text-center mb-16"
-              >
-                <span className="text-brand-yellow text-xs font-semibold tracking-widest uppercase block mb-3 drop-shadow-md">— L'Art Culinaire —</span>
-                <h2 className="font-serif text-3xl md:text-5xl font-black text-white tracking-tight drop-shadow-lg">Our Signature Spotlight</h2>
-                <p className="text-white/60 text-xs md:text-sm max-w-lg mx-auto mt-4 leading-relaxed font-sans uppercase tracking-wider font-semibold">
-                  Un aperçu exclusif de nos plus belles créations côtières.
-                </p>
-                <div className="w-12 h-[1px] premium-gold-gradient mx-auto mt-6" />
-              </motion.div>
-
-              {/* 3 spotlight items grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                {spotlightItems.map((item, idx) => (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.7, delay: idx * 0.15 }}
-                    key={item.id} 
-                    className="subtle-glass-gold hover:border-brand-yellow/40 hover:-translate-y-2 transition-all duration-300 rounded-3xl overflow-hidden flex flex-col h-full cursor-pointer shadow-2xl"
-                    onClick={() => navigateTo('/menu')}
-                  >
-                    <div className="h-52 w-full overflow-hidden relative">
-                      <img 
-                        src={item.image} 
-                        alt={item.name} 
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                      />
-                      {item.badge && (
-                        <span className="absolute top-4 left-4 bg-brand-yellow text-brand-navy font-bold text-[9px] uppercase tracking-widest px-3 py-1 rounded-full shadow-sm">
-                          {item.badge}
-                        </span>
-                      )}
-                    </div>
-                    
-                    <div className="p-6 flex flex-col justify-between flex-grow">
-                      <div>
-                        <div className="flex justify-between items-baseline gap-2 mb-2">
-                          <h3 className="font-serif font-bold text-xl text-white group-hover:text-brand-yellow transition-colors line-clamp-1 drop-shadow-md">
-                            {item.name}
-                          </h3>
-                          <span className="text-gold-gradient font-black text-lg whitespace-nowrap drop-shadow-md">{item.price} <span className="text-xs">TND</span></span>
-                        </div>
-                        <p className="text-xs text-white/70 leading-relaxed font-semibold line-clamp-3">
-                          {item.description}
-                        </p>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 mt-5">
-                        {item.tags?.map(t => (
-                          <span key={t} className="text-[9px] bg-white/10 border border-white/5 text-white/80 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider shadow-sm">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Big CTA for Full menu */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-center mt-6"
-              >
-                <button
-                  onClick={() => navigateTo('/menu')}
-                  className="px-8 py-4 rounded-[8px] premium-gold-gradient text-brand-navy hover:opacity-90 transition-all duration-300 font-bold uppercase tracking-widest text-xs cursor-pointer shadow-lg shadow-brand-yellow/20 inline-flex items-center gap-2"
-                >
-                  <BookOpen size={14} />
-                  <span>Découvrir le menu complet & Composer vos plateaux</span>
-                </button>
-              </motion.div>
-
-            </div>
-          </section>
-
-          {/* 5. Physical branches map view section */}
-          <BranchesSection />
-
-          {/* 6. Reservation form component */}
-          <ReservationSection />
+          <button onClick={() => window.scrollTo(0, 0)} className="text-left text-lg font-medium hover:text-brand-yellow transition-colors duration-300">Accueil</button>
+          <button onClick={() => scrollToId('menu')} className="text-left text-lg font-medium hover:text-brand-yellow transition-colors duration-300">Menu</button>
+          <button onClick={() => scrollToId('branches')} className="text-left text-lg font-medium hover:text-brand-yellow transition-colors duration-300">Branches</button>
+          <button onClick={() => scrollToId('reservation')} className="text-left text-lg font-medium hover:text-brand-yellow transition-colors duration-300">Réservation</button>
         </motion.div>
       )}
       </AnimatePresence>
 
-      {/* 7. Shared Dedicated Coastal Footer block */}
-      <footer className="bg-brand-navy border-t border-white/5 py-16 px-4 text-center text-sm relative z-10">
-        <div className="max-w-5xl mx-auto flex flex-col items-center">
-          
-          <ShrimpLogo size={70} showText={false} />
-          
-          <span className="font-serif text-xl font-bold tracking-widest text-white mt-3 block">SHRIMP TIME TUNISIE</span>
-          <span className="text-xs text-brand-green font-arabic block mt-1 tracking-wider">— عيش التجربة —</span>
+      {/* Hero Section */}
+      <section className="h-screen relative flex flex-col items-center justify-center pt-[70px] bg-brand-navy">
+        <div
+          className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1565557623262-b51c2513a641?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-15"
+        ></div>
 
-          {/* Dynamic Social Network block links */}
-          <div className="flex items-center gap-5 my-8">
-            <a
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full flex items-center justify-center border border-white/10 hover:border-brand-yellow hover:text-brand-yellow text-white/75 bg-white/5 hover:bg-white/10 transition-all cursor-pointer"
-              title="Rejoignez-nous sur Instagram"
-            >
-              <svg className="w-5 h-5 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-              </svg>
-            </a>
-            
-            <a
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full flex items-center justify-center border border-white/10 hover:border-brand-yellow hover:text-brand-yellow text-white/75 bg-white/5 hover:bg-white/10 transition-all cursor-pointer"
-              title="Suivez-nous sur Facebook"
-            >
-              <svg className="w-5 h-5 fill-none stroke-current" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-              </svg>
-            </a>
-          </div>
+        <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 w-full max-w-4xl">
+          <img src="/logo.png" alt="Shrimp Time" className="w-[80%] max-w-[300px] h-auto mb-4 drop-shadow-2xl" />
 
-          <div className="w-12 h-[1px] bg-white/10 my-4" />
-
-          {/* Footer credentials copy block */}
-          <p className="text-white/45 text-xs max-w-md mx-auto leading-relaxed">
-            &copy; {new Date().getFullYear()} Shrimp Time Tunisie. Tous droits réservés.<br />
-            Spécialités de fruits de mer, seaux de crevettes cajun, pâtes artisanales et poissons frais à Tunis.<br />
-            <span className="text-[10px] text-brand-yellow/30 font-bold block mt-1.5 uppercase tracking-widest">Tunis • Sfax • Kelibia</span>
-            <span className="mt-4 inline-flex items-center gap-2 text-xs text-white/60 hover:text-brand-yellow transition-colors font-medium bg-white/5 px-4 py-2 rounded-full border border-white/5 hover:border-brand-yellow/30">
-              <Mail size={12} className="text-brand-yellow" />
-              <span>shrimptime270@gmail.com</span>
-            </span>
+          <p className="text-brand-green text-[18px] uppercase tracking-[2px] font-bold mt-4 mb-10">
+            Vivez l'expérience
           </p>
 
+          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto px-6">
+            <button onClick={() => scrollToId('menu')} className="btn-primary w-full md:w-auto">
+              📖 Voir le Menu
+            </button>
+            <button onClick={() => scrollToId('reservation')} className="btn-secondary w-full md:w-auto">
+              📞 Réserver
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Branches Section */}
+      <section id="branches" className="py-20 md:py-[100px] px-5 md:px-10 bg-brand-white max-w-[1200px] mx-auto">
+        <div className="text-center mb-10">
+          <h2 className="text-[36px] md:text-[48px] text-brand-navy font-serif">Nos Branches</h2>
+          <div className="w-[60px] h-[3px] bg-brand-yellow mx-auto mt-2"></div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          {BRANCHES.map(branch => (
+            <motion.div
+              key={branch.id}
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="p-[30px] rounded-[12px] border border-brand-yellow/20 card-shadow bg-white flex flex-col items-center text-center"
+            >
+              <span className="text-[40px] mb-4">🦐</span>
+              <h3 className="text-[24px] font-serif text-brand-navy mb-2">{branch.name}</h3>
+              <p className="text-brand-muted text-[16px] mb-6 h-12">{branch.desc}</p>
+              <p className="text-brand-navy font-bold text-[18px] mb-6">📞 {branch.phone}</p>
+              <a href={`tel:${branch.phone.replace(/\s/g, '')}`} className="btn-primary w-full inline-block">
+                Appeler
+              </a>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Menu Section */}
+      <section id="menu" className="py-20 md:py-[100px] px-5 md:px-10 bg-brand-light-grey">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-[36px] md:text-[48px] text-brand-navy font-serif">Notre Menu</h2>
+            <div className="w-[60px] h-[3px] bg-brand-yellow mx-auto mt-2"></div>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex flex-wrap justify-center gap-3 mb-10">
+            {(['entrées', 'plats', 'desserts'] as const).map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-6 py-2 rounded-full font-semibold capitalize transition-all duration-300 cursor-pointer ${
+                  activeTab === tab
+                    ? 'bg-brand-yellow text-brand-navy border border-brand-yellow'
+                    : 'border border-brand-navy text-brand-navy hover:bg-brand-yellow/10'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Menu List */}
+          <div className="max-w-[700px] mx-auto bg-white rounded-[12px] p-2 md:p-6 card-shadow border border-brand-yellow/20 min-h-[300px] overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div 
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="flex flex-col"
+              >
+                {MENU_DATA[activeTab].map((item, idx, arr) => (
+                  <div key={item.name} className={`py-4 px-2 flex justify-between gap-4 ${idx !== arr.length - 1 ? 'border-b border-gray-200' : ''}`}>
+                    <div className="flex-1">
+                      <p className="font-bold text-[16px] text-brand-navy mb-1">{idx === 0 ? '🦐' : idx === 1 ? '🦑' : '🦪'} {item.name}</p>
+                      <p className="text-[14px] text-brand-muted">{item.desc}</p>
+                    </div>
+                    <div className="text-brand-yellow font-bold text-[18px] whitespace-nowrap pt-1">
+                      {item.price} DT
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </section>
+
+      {/* Reservation Section */}
+      <section id="reservation" className="py-20 md:py-[100px] px-5 md:px-10 bg-brand-white">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-[36px] md:text-[48px] text-brand-navy font-serif">Réserver une Table</h2>
+            <div className="w-[60px] h-[3px] bg-brand-yellow mx-auto mt-2 mb-4"></div>
+            <p className="text-[16px] text-brand-muted">Réservez en ligne, sans appel</p>
+          </div>
+
+          <form onSubmit={submitReservation} className="max-w-[500px] mx-auto bg-white p-[30px] rounded-[12px] card-shadow border border-brand-yellow/20 flex flex-col gap-5 relative">
+
+            <AnimatePresence>
+            {showSuccess && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-0 bg-white/95 z-10 flex flex-col items-center justify-center rounded-[12px] text-center p-6 backdrop-blur-sm"
+              >
+                <span className="text-4xl mb-4">🎉</span>
+                <p className="text-lg font-bold text-brand-navy">Redirection vers WhatsApp...</p>
+                <p className="text-sm text-brand-muted mt-2">Merci pour votre réservation !</p>
+              </motion.div>
+            )}
+            </AnimatePresence>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[14px] font-semibold text-brand-navy">Choisissez votre branche *</label>
+              <select
+                name="branch"
+                value={formState.branch}
+                onChange={handleFormChange}
+                required
+                className="w-full p-3 rounded-lg border border-gray-300 focus:border-brand-yellow focus:outline-none focus:ring-2 focus:ring-brand-yellow/30 bg-white"
+              >
+                <option value="marsa">La Marsa</option>
+                <option value="aouina">L'Aouina</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[14px] font-semibold text-brand-navy">📱 Votre numéro de téléphone *</label>
+              <input
+                type="tel"
+                name="phone"
+                value={formState.phone}
+                onChange={handleFormChange}
+                placeholder="Ex: 29 123 456"
+                required
+                className={`w-full p-3 rounded-lg border ${formErrors.phone ? 'border-brand-error focus:ring-brand-error/30' : 'border-gray-300 focus:border-brand-yellow focus:ring-brand-yellow/30'} focus:outline-none focus:ring-2 bg-white`}
+              />
+              {formErrors.phone && <p className="text-brand-error text-xs font-medium">{formErrors.phone}</p>}
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[14px] font-semibold text-brand-navy">👥 Nombre de personnes *</label>
+              <select
+                name="guests"
+                value={formState.guests}
+                onChange={handleFormChange}
+                required
+                className="w-full p-3 rounded-lg border border-gray-300 focus:border-brand-yellow focus:outline-none focus:ring-2 focus:ring-brand-yellow/30 bg-white"
+              >
+                {[...Array(20)].map((_, i) => (
+                  <option key={i+1} value={i+1}>{i+1}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[14px] font-semibold text-brand-navy">📅 Date souhaitée *</label>
+              <input
+                type="date"
+                name="date"
+                value={formState.date}
+                onChange={handleFormChange}
+                required
+                className="w-full p-3 rounded-lg border border-gray-300 focus:border-brand-yellow focus:outline-none focus:ring-2 focus:ring-brand-yellow/30 bg-white"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[14px] font-semibold text-brand-navy">🕐 Heure souhaitée *</label>
+              <select
+                name="time"
+                value={formState.time}
+                onChange={handleFormChange}
+                required
+                className="w-full p-3 rounded-lg border border-gray-300 focus:border-brand-yellow focus:outline-none focus:ring-2 focus:ring-brand-yellow/30 bg-white"
+              >
+                {['12:00','12:30','13:00','13:30','14:00','14:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00','22:30'].map(t => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </div>
+
+            <button type="submit" className="btn-primary w-full mt-2">
+              RÉSERVER MAINTENANT →
+            </button>
+            <p className="text-center text-[14px] text-brand-muted mt-2">
+              ⚡ Sans engagement. Confirmation immédiate via WhatsApp.
+            </p>
+          </form>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-brand-navy py-12 px-5 text-center text-white">
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-[32px]">🦐</span>
+          <p className="font-serif text-[20px] mb-2">Shrimp Time</p>
+          <p className="text-[14px] text-white/80">📍 La Marsa & L'Aouina</p>
+          <p className="text-[14px] text-white/80">📞 71 234 567 / 71 234 568</p>
+          <a href="#" className="text-[14px] text-brand-yellow hover:underline mt-2">📸 @shrimp_.time</a>
+          
+          <div className="w-[40px] h-[1px] bg-white/20 my-6"></div>
+          
+          <p className="text-[12px] text-white/50">
+            &copy; {new Date().getFullYear()} Shrimp Time. Tous droits réservés.
+          </p>
         </div>
       </footer>
 
-      </motion.div>
+      <style>{`
+
+      `}</style>
     </div>
   );
 }
