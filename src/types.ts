@@ -1,9 +1,11 @@
 export interface MenuItem {
   id: string;
   name: string;
+  nameAr?: string;
   category: 'seafood_boil' | 'crispy' | 'sides' | 'drinks';
   price: number;
   description: string;
+  descriptionAr?: string;
   emoji: string;
   image?: string;
   note?: string;
