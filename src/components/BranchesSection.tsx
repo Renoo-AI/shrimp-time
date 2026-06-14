@@ -4,12 +4,16 @@ import { MapPin, Clock, Phone, Compass } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function BranchesSection() {
+  const [activeBranchId, setActiveBranchId] = React.useState('marsa_zephyr');
+  
+  const activeBranch = BRANCHES.find(b => b.id === activeBranchId) || BRANCHES[0];
+
   return (
     <section id="branches" className="py-16 md:py-24 px-4 premium-gradient-bg relative">
       {/* Visual background ripple overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(234,209,27,0.06),rgba(0,0,0,0))] pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-5xl mx-auto relative z-10">
         
         {/* Section Header */}
         <motion.div 
@@ -17,7 +21,7 @@ export default function BranchesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12 md:mb-16"
+          className="text-center mb-10 md:mb-14"
         >
           <span className="text-brand-yellow uppercase text-[11px] sm:text-xs tracking-widest font-extrabold block mb-2 font-mono drop-shadow-md">
             Nos Établissements en Tunisie
@@ -26,117 +30,116 @@ export default function BranchesSection() {
             Trois Adresses d'Exception
           </h2>
           <p className="text-white/80 text-xs sm:text-sm md:text-base max-w-2xl mx-auto mt-4 px-2 font-sans font-semibold leading-relaxed">
-            Que vous recherchiez le dynamisme de la ville, l'ambiance mythique face à la mer, ou la modernité de la Cité El Wahat, découvrez nos trois tables d'exception à Tunis.
+            Découvrez nos trois tables d'exception à Tunis. Choisissez un établissement ci-dessous pour voir ses horaires, son adresse et ses détails.
           </p>
           <div className="w-16 h-[1.5px] premium-gold-gradient mx-auto mt-6" />
         </motion.div>
 
-        {/* Dynamic Branch Cards Grid in Dark Mode */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8" id="branches-list-grid">
-          {BRANCHES.map((branch, idx) => {
-            const arabicSubtitle = branch.id === 'marsa_zephyr' 
-              ? 'فرع المرسى (قبالة زفير)' 
-              : branch.id === 'marsa_plage' 
-              ? 'فرع المرسى (قبالة قبة الهواء)' 
-              : 'فرع العوينة (تحت مصحة عائشة)';
-            
+        {/* Tab Selection Row */}
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 max-w-2xl mx-auto">
+          {BRANCHES.map((branch) => {
+            const isActive = branch.id === activeBranchId;
+            const label = branch.id === 'marsa_plage' ? 'Plage' : branch.id === 'marsa_zephyr' ? 'Zéphir' : 'Ville';
             return (
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, delay: idx * 0.15 }}
+              <button
                 key={branch.id}
-                className="group relative rounded-[12px] bg-brand-navy/60 backdrop-blur-md text-white border border-brand-yellow/35 hover:border-brand-yellow hover:shadow-2xl hover:shadow-brand-yellow/10 hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-xl"
+                onClick={() => setActiveBranchId(branch.id)}
+                className={`py-3 px-6 rounded-[12px] border text-xs sm:text-sm font-bold uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md flex-1 min-w-[120px] ${
+                  isActive 
+                    ? 'premium-gold-gradient text-brand-navy border-brand-yellow font-black' 
+                    : 'bg-brand-navy/60 text-white/70 border-brand-yellow/20 hover:border-brand-yellow/60 hover:text-white'
+                }`}
               >
-                {/* Visual Top Bar decoration */}
-                <div className="h-1.5 w-full premium-gold-gradient" />
-
-                {/* Main Card Content */}
-                <div className="p-6 md:p-8 flex-1 flex flex-col justify-between">
-                  <div>
-                    {/* Badge with category type */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-brand-yellow">
-                        <MapPin size={18} />
-                      </div>
-                      <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-white/5 text-white border border-white/10">
-                        {branch.id === 'marsa_plage' ? 'Plage' : branch.id === 'marsa_zephyr' ? 'Zéphir' : 'Ville'}
-                      </span>
-                    </div>
-
-                    {/* Title & Ambiance details */}
-                    <h3 className="text-xl md:text-2xl font-serif font-black text-white hover:text-brand-yellow transition-colors mb-1 leading-tight uppercase">
-                      {branch.name}
-                    </h3>
-                    <p className="text-brand-yellow font-arabic font-bold text-xs mb-4">
-                      {arabicSubtitle}
-                    </p>
-
-                    <p className="text-white/80 text-xs sm:text-sm leading-relaxed mb-6 font-sans">
-                      {branch.ambiance}
-                    </p>
-                  </div>
-
-                  <div>
-                    <div className="w-full h-[1px] bg-white/10 mb-6" />
-
-                    {/* Info Row: Operating hours, Address, and Direct Call */}
-                    <div className="flex flex-col gap-4">
-                      {/* Hourly block */}
-                      <div className="flex items-start gap-3">
-                        <Clock size={16} className="text-brand-yellow mt-0.5 flex-shrink-0" />
-                        <div className="flex flex-col">
-                          <span className="text-[10px] text-white/50 uppercase tracking-widest font-black leading-none mb-1">Horaires</span>
-                          <span className="text-xs text-white font-semibold">{branch.hours}</span>
-                        </div>
-                      </div>
-
-                      {/* Address block */}
-                      <div className="flex items-start gap-3">
-                        <MapPin size={16} className="text-brand-yellow mt-0.5 flex-shrink-0" />
-                        <div className="flex flex-col">
-                          <span className="text-[10px] text-white/50 uppercase tracking-widest font-black leading-none mb-1">Notre Adresse</span>
-                          <span className="text-xs text-white/90 font-medium leading-relaxed">{branch.address}</span>
-                        </div>
-                      </div>
-
-                      {/* Phone Contact Block */}
-                      <div className="flex items-start gap-4">
-                        <Phone size={16} className="text-brand-yellow mt-0.5 flex-shrink-0" />
-                        <div className="flex flex-col w-full">
-                          <span className="text-[10px] text-white/50 uppercase tracking-widest font-black leading-none mb-1">Contact direct</span>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-xs text-white font-bold">{branch.phoneDisplay}</span>
-                            <a 
-                              href={`tel:${branch.phone}`}
-                              className="text-[9px] bg-white/10 hover:bg-brand-yellow hover:text-brand-navy text-white px-2.5 py-1 rounded font-black uppercase transition-all"
-                            >
-                              Appeler
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Styled Button Section: 8px border radius, gold bg, navy text */}
-                <div className="px-6 md:px-8 pb-6 md:pb-8 mt-auto flex flex-col gap-2">
-                  <a
-                    href={branch.mapLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3 rounded-[8px] premium-gold-gradient hover:opacity-90 active:scale-95 text-brand-navy font-black text-xs uppercase tracking-widest text-center transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md"
-                  >
-                    <Compass size={14} />
-                    <span>Google Maps</span>
-                  </a>
-                </div>
-              </motion.div>
+                <MapPin size={14} className={isActive ? 'text-brand-navy' : 'text-brand-yellow'} />
+                <span>{label}</span>
+              </button>
             );
           })}
         </div>
+
+        {/* Dynamic Branch Details Card */}
+        <motion.div
+          key={activeBranch.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="relative rounded-[16px] bg-brand-navy/60 backdrop-blur-md text-white border border-brand-yellow/35 hover:border-brand-yellow hover:shadow-2xl hover:shadow-brand-yellow/10 transition-all duration-300 overflow-hidden shadow-xl max-w-4xl mx-auto"
+        >
+          {/* Visual Top Bar decoration */}
+          <div className="h-1.5 w-full premium-gold-gradient" />
+
+          <div className="p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-stretch">
+            {/* Left Column: Info & Actions */}
+            <div className="md:col-span-7 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase bg-white/5 text-white border border-white/10">
+                    {activeBranch.id === 'marsa_plage' ? 'Plage' : activeBranch.id === 'marsa_zephyr' ? 'Zéphir' : 'Ville'}
+                  </span>
+                </div>
+
+                <h3 className="text-xl md:text-3xl font-serif font-black text-white hover:text-brand-yellow transition-colors mb-1 leading-tight uppercase">
+                  {activeBranch.name}
+                </h3>
+                <p className="text-brand-yellow font-arabic font-bold text-xs md:text-sm mb-4">
+                  {activeBranch.id === 'marsa_zephyr' 
+                    ? 'فرع المرسى (قبالة زفير)' 
+                    : activeBranch.id === 'marsa_plage' 
+                    ? 'فرع المرسى (قبالة قبة الهواء)' 
+                    : 'فرع العوينة (تحت مصحة عائشة)'}
+                </p>
+
+                <p className="text-white/80 text-xs sm:text-sm md:text-base leading-relaxed mb-6 font-sans font-medium">
+                  {activeBranch.ambiance}
+                </p>
+              </div>
+
+              {/* Call and Maps Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                <a
+                  href={activeBranch.mapLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-3 rounded-[8px] premium-gold-gradient hover:opacity-90 active:scale-95 text-brand-navy font-black text-xs uppercase tracking-widest text-center transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                >
+                  <Compass size={14} />
+                  <span>Google Maps</span>
+                </a>
+                
+                <a 
+                  href={`tel:${activeBranch.phone}`}
+                  className="flex-1 py-3 rounded-[8px] bg-white/10 hover:bg-white/20 active:scale-95 text-white border border-white/25 font-black text-xs uppercase tracking-widest text-center transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                >
+                  <Phone size={14} className="text-brand-yellow" />
+                  <span>Appeler ({activeBranch.phoneDisplay})</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Right Column: Address and Operating Hours Info */}
+            <div className="md:col-span-5 bg-white/5 border border-white/10 rounded-[12px] p-6 flex flex-col justify-center gap-6">
+              {/* Hourly block */}
+              <div className="flex items-start gap-3">
+                <Clock size={18} className="text-brand-yellow flex-shrink-0 mt-0.5" />
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-white/50 uppercase tracking-widest font-black leading-none mb-1.5 font-mono">Horaires</span>
+                  <span className="text-xs sm:text-sm text-white font-semibold leading-relaxed">{activeBranch.hours}</span>
+                </div>
+              </div>
+
+              <div className="w-full h-[1px] bg-white/10" />
+
+              {/* Address block */}
+              <div className="flex items-start gap-3">
+                <MapPin size={18} className="text-brand-yellow flex-shrink-0 mt-0.5" />
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-white/50 uppercase tracking-widest font-black leading-none mb-1.5 font-mono">Notre Adresse</span>
+                  <span className="text-xs sm:text-sm text-white/90 font-medium leading-relaxed">{activeBranch.address}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
