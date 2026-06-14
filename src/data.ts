@@ -282,16 +282,22 @@ export const TIME_SLOTS = [
   '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30',
 ];
 
+export const RESTAURANT_HOURS = 'Mar–Dim · 12:00 – 23:30';
+
 export const RESERVATION_FORM_INITIAL: {
-  branch: string;
+  name: string;
   phone: string;
   guests: number;
   date: string;
   time: string;
+  branch: string;
+  requests: string;
 } = {
-  branch: 'marsa',
+  name: '',
   phone: '',
   guests: 2,
   date: '',
-  time: '19:00',
+  time: '21:00',
+  branch: 'marsa',
+  requests: '',
 };

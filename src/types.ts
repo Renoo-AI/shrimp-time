@@ -18,9 +18,11 @@ export interface Branch {
 }
 
 export interface ReservationFormData {
-  branch: string;
+  name: string;
   phone: string;
   guests: number;
   date: string;
   time: string;
+  branch: string;
+  requests: string;
 }
