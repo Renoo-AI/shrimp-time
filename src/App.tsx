@@ -6,71 +6,51 @@ import ReservationSection from './components/ReservationSection';
 import { INSTAGRAM_URL, BRANCHES } from './data';
 import { motion } from 'motion/react';
 
-const to = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
 export default function App() {
   return (
-    <main className="min-h-screen antialiased" style={{ background: '#0A1F3F' }}>
+    <main className="min-h-screen antialiased bg-white text-navy">
       <Navbar />
 
-      {/* ═══════════ HERO — Full-bleed photography, gold typography ═══════════ */}
-      <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        
-        {/* Full-bleed image */}
-        <img
-          src="/hero-bg.jpg"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover z-0"
-          style={{ filter: 'brightness(0.25) saturate(0.6)' }}
-        />
-        
-        {/* Subtle dark overlay */}
-        <div className="absolute inset-0 z-[1]" style={{ background: 'linear-gradient(to bottom, rgba(10,31,63,0.4) 0%, rgba(10,31,63,0.7) 60%, #0A1F3F 100%)' }} />
+      {/* ═══════════ HERO — Full-bleed seafood, bright + welcoming ═══════════ */}
+      <section id="hero" className="relative min-h-[105vh] flex items-center justify-center overflow-hidden">
+        <img src="/hero-bg.jpg" alt="" className="absolute inset-0 w-full h-full object-cover z-0"
+          style={{ filter: 'brightness(0.35) saturate(1.1)' }} />
+        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-navy/50 via-navy/30 to-navy/70" />
 
-        {/* Content — very little on screen */}
-        <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-3xl w-full">
-          
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <img src="/logo.png" alt="Shrimp Time" className="w-[200px] md:w-[260px] h-auto mx-auto mb-20" />
+        <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl w-full pt-16">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}>
+            <img src="/logo.png" alt="Shrimp Time" className="w-[180px] md:w-[240px] h-auto mx-auto mb-16 md:mb-20 drop-shadow-2xl" />
           </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="h-xl text-[13vw] md:text-[130px] text-white tracking-tighter leading-[0.82]"
-          >
-            SHRIMP<br />TIME
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="display text-[12vw] md:text-[110px] text-white tracking-tight leading-[0.85] drop-shadow-lg">
+            Fruits de<br />Mer Frais
           </motion.h1>
 
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 1, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="gold-line mt-12"
-          />
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.5 }}
-            transition={{ duration: 1.2, delay: 1.0 }}
-            className="label text-white/40 mt-8"
-          >
-            Fruits de mer frais — La Marsa & L'Aouina
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.7 }}
+            className="label-s text-yellow mt-8 tracking-[0.2em]">
+            La Marsa & L'Aouina — Tunis
           </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col sm:flex-row gap-4 mt-14"
-          >
-            <button onClick={() => to('menu')} className="btn-gold">Découvrir le Menu</button>
-            <button onClick={() => to('reservation')} className="btn-outline">Réserver une Table</button>
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col sm:flex-row gap-4 mt-12">
+            <button onClick={() => go('menu')} className="btn-yellow">Voir le Menu</button>
+            <button onClick={() => go('reservation')}
+              className="btn-ghost text-white border-white hover:bg-white hover:text-navy">
+              Réserver une Table
+            </button>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}
+            className="mt-20 md:mt-24 flex items-center gap-3 text-white/50 text-xs font-sans">
+            <span className="w-8 h-px bg-white/20" />
+            Scroll
+            <span className="w-8 h-px bg-white/20" />
           </motion.div>
         </div>
       </section>
@@ -85,23 +65,26 @@ export default function App() {
       <ReservationSection />
 
       {/* ═══════════ FOOTER ═══════════ */}
-      <footer className="relative py-24 px-8 md:px-12 lg:px-20 overflow-hidden" style={{ background: '#060E1F' }}>
-        <div className="max-w-[1200px] mx-auto relative z-10">
-          <div className="flex flex-col lg:flex-row justify-between items-start gap-16">
+      <footer className="py-20 px-6 md:px-10" style={{ background: '#0A1F3F' }}>
+        <div className="max-w-[1200px] mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
             <div>
-              <img src="/logo.png" alt="Shrimp Time" className="h-8 w-auto opacity-30 mb-8" />
-              {BRANCHES.map((b) => (
-                <p key={b.id} className="h-italic text-base text-white/25 mb-1">{b.name}</p>
-              ))}
-              <p className="label text-white/15 mt-6">{BRANCHES[0].phoneDisplay}</p>
-            </div>
-            <div className="flex flex-col items-start lg:items-end gap-5 text-left lg:text-right">
-              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="label text-white/20 hover:text-yellow transition-colors duration-500">
-                @shrimp_.time
+              <img src="/logo.png" alt="Shrimp Time" className="h-10 w-auto mb-6 brightness-200" />
+              <div className="flex flex-col gap-1">
+                {BRANCHES.map((b) => (
+                  <p key={b.id} className="italic-s text-base text-white/60">{b.name} — {b.address}</p>
+                ))}
+              </div>
+              <a href={`tel:${BRANCHES[0].phone}`} className="label-s text-yellow mt-6 block">
+                {BRANCHES[0].phoneDisplay}
               </a>
-              <p className="text-[10px] text-white/10 font-sans uppercase tracking-[0.2em]">
-                &copy; {new Date().getFullYear()} Shrimp Time
-              </p>
+            </div>
+            <div className="flex flex-col gap-4 items-start md:items-end">
+              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer"
+                className="label-s text-white/50 hover:text-yellow transition-colors">
+                Instagram @shrimp_.time
+              </a>
+              <p className="text-xs text-white/20 font-sans">&copy; {new Date().getFullYear()} Shrimp Time. Tous droits réservés.</p>
             </div>
           </div>
         </div>

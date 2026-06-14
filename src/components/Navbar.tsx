@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { NAV_LINKS } from '../data';
 
-let last = 0;
-
 export default function Navbar() {
-  const [show, setShow] = useState(true);
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const h = () => {
-      const y = window.scrollY;
-      setShow(y <= last || y < 80);
-      last = y;
-    };
+    const h = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', h, { passive: true });
     return () => window.removeEventListener('scroll', h);
   }, []);
@@ -23,38 +17,49 @@ export default function Navbar() {
 
   return (
     <>
-      <nav
-        className="fixed top-0 left-0 w-full z-50 transition-transform duration-700"
+      <nav className="fixed top-0 left-0 w-full z-50 transition-all duration-300"
         style={{
-          transform: show ? 'translateY(0)' : 'translateY(-100%)',
-          background: 'rgba(10,31,63,0.6)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-        }}
-      >
-        <div style={{ height: 64 }} className="max-w-[1200px] mx-auto px-8 md:px-12 flex items-center justify-between">
-          <button onClick={() => go('hero')} className="cursor-pointer opacity-50 hover:opacity-80 transition-opacity duration-500">
-            <img src="/logo.png" alt="Shrimp Time" className="h-7 w-auto" />
+          background: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0)',
+          backdropFilter: scrolled ? 'blur(12px)' : 'none',
+          borderBottom: scrolled ? '1px solid rgba(0,0,0,0.06)' : '1px solid transparent',
+        }}>
+        <div className="max-w-[1200px] mx-auto px-6 md:px-10 flex items-center justify-between" style={{ height: 68 }}>
+          <button onClick={() => go('hero')} className="cursor-pointer">
+            <img src="/logo.png" alt="Shrimp Time" className="h-9 w-auto" />
           </button>
-          <div className="hidden md:flex items-center gap-12">
+          <div className="hidden md:flex items-center gap-10">
             {NAV_LINKS.map((l) => (
-              <button key={l.id} onClick={() => go(l.id)} className="label text-white/30 hover:text-yellow transition-colors duration-300 cursor-pointer">
+              <button key={l.id} onClick={() => go(l.id)}
+                className="label-s text-navy/70 hover:text-yellow transition-colors cursor-pointer"
+                style={{ color: scrolled ? '#0A1F3F' : '#fff', opacity: scrolled ? 0.7 : 0.85 }}>
                 {l.label}
               </button>
             ))}
           </div>
-          <button onClick={() => setOpen(!open)} className="md:hidden p-2 cursor-pointer" aria-label="Menu">
-            <span className={`block w-5 h-px bg-white/40 mb-[5px] transition-all duration-300 ${open ? 'rotate-45 translate-y-[6px]' : ''}`} />
-            <span className={`block w-5 h-px bg-white/40 mb-[5px] transition-all duration-300 ${open ? 'opacity-0' : ''}`} />
-            <span className={`block w-5 h-px bg-white/40 transition-all duration-300 ${open ? '-rotate-45 -translate-y-[6px]' : ''}`} />
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={() => go('reservation')}
+              className="hidden md:flex btn-yellow text-xs py-2.5 px-5">
+              Réserver
+            </button>
+            <button onClick={() => setOpen(!open)} className="md:hidden p-2 cursor-pointer" aria-label="Menu"
+              style={{ color: scrolled ? '#0A1F3F' : '#fff' }}>
+              <svg width="22" height="16" viewBox="0 0 22 16" fill="none">
+                <rect width="22" height="2" rx="1" fill="currentColor"/>
+                <rect y="7" width="22" height="2" rx="1" fill="currentColor"/>
+                <rect y="14" width="22" height="2" rx="1" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </nav>
+
       {open && (
-        <div className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-10" style={{ background: '#0A1F3F' }}>
+        <div className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-white">
+          <button onClick={() => setOpen(false)} className="absolute top-6 right-6 p-2 text-navy text-2xl cursor-pointer">&times;</button>
           {NAV_LINKS.map((l, i) => (
-            <button key={l.id} onClick={() => go(l.id)} className="h-italic text-3xl text-white/60 hover:text-yellow transition-colors cursor-pointer"
-              style={{ animation: `rise 0.5s ease forwards ${i * 0.08}s`, opacity: 0 }}>
+            <button key={l.id} onClick={() => go(l.id)}
+              className="heading text-3xl text-navy hover:text-yellow transition-colors cursor-pointer"
+              style={{ animation: `fadeIn 0.4s ease forwards ${i * 0.08}s`, opacity: 0 }}>
               {l.label}
             </button>
           ))}

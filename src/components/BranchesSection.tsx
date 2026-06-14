@@ -4,39 +4,41 @@ import { motion } from 'motion/react';
 
 export default function BranchesSection() {
   return (
-    <section id="branches" className="relative py-36 md:py-52 px-8 md:px-12 lg:px-20" style={{ background: '#F8F6F2' }}>
-      <div className="max-w-[1200px] mx-auto">
+    <section id="branches" className="py-24 md:py-32 px-6 md:px-10" style={{ background: '#F8F6F2' }}>
+      <div className="max-w-[1000px] mx-auto">
         
         <motion.div
           initial="hidden" whileInView="visible" viewport={{ once: true }}
-          transition={{ staggerChildren: 0.15 }}
-          className="mb-28 md:mb-36"
+          transition={{ staggerChildren: 0.12 }}
+          className="text-center mb-16 md:mb-20"
         >
-          <motion.p variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: 0.8 }} className="label text-muted mb-4">
-            Tunis, Tunisie
-          </motion.p>
-          <motion.h2 variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0 } }} transition={{ duration: 0.8 }} className="h-lg text-5xl md:text-7xl text-navy">
+          <motion.span variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+            className="text-5xl mb-4 block">🦐</motion.span>
+          <motion.h2 variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+            className="heading text-4xl md:text-5xl text-navy">
             Nos Branches
           </motion.h2>
-          <motion.div variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1 } }} transition={{ duration: 0.8 }} className="gold-line mt-10" />
+          <motion.div variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1 } }}
+            className="mx-auto mt-6" style={{ width: 48, height: 3, background: '#F5D300', borderRadius: 2 }} />
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-24 md:gap-36">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {BRANCHES.map((b, i) => (
             <motion.div
               key={b.id}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 1, delay: i * 0.2, ease: [0.16, 1, 0.3, 1] }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.6, delay: i * 0.15 }}
+              className="bg-white p-8 md:p-10 rounded-xl border border-yellow/20 shadow-sm hover:shadow-md transition-shadow duration-300"
             >
-              <p className="h-xl text-[90px] md:text-[120px] text-navy/[0.03] leading-none select-none mb-4">
-                {String(i + 1).padStart(2, '0')}
-              </p>
-              <h3 className="h-italic text-2xl md:text-3xl text-navy">{b.name}</h3>
-              <p className="body text-muted mt-4 leading-relaxed max-w-[340px]">{b.address}</p>
-              <a href={`tel:${b.phone}`} className="inline-block h-italic text-xl text-navy hover:text-yellow transition-colors duration-300 mt-10">
-                {b.phoneDisplay}
+              <span className="text-4xl mb-4 block">🦐</span>
+              <h3 className="heading text-xl text-navy uppercase tracking-wide mb-2">{b.name}</h3>
+              <p className="text-sm text-muted leading-relaxed mb-5">{b.address}</p>
+              <p className="text-sm text-muted mb-6">📞 {b.phoneDisplay}</p>
+              <a href={`tel:${b.phone}`}
+                className="inline-block btn-yellow text-sm py-3 px-8">
+                Appeler
               </a>
             </motion.div>
           ))}
