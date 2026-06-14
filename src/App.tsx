@@ -10,6 +10,30 @@ import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const duration = 1800; // 1.8 seconds loading time
+    const intervalTime = 30;
+    const step = 100 / (duration / intervalTime);
+    
+    const timer = setInterval(() => {
+      setProgress((prev) => {
+        const next = prev + step;
+        if (next >= 100) {
+          clearInterval(timer);
+          setTimeout(() => {
+            setLoading(false);
+          }, 300);
+          return 100;
+        }
+        return next;
+      });
+    }, intervalTime);
+
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -49,6 +73,59 @@ export default function App() {
   return (
     <div className="min-h-screen premium-gradient-bg selection:bg-brand-yellow/30 relative text-white antialiased font-sans">
       
+      {/* 0. Preloader fake loading screen */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            key="preloader"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-[100] bg-brand-navy flex flex-col justify-center items-center select-none"
+          >
+            <div className="flex flex-col items-center max-w-xs w-full px-6">
+              {/* Pulsing Logo */}
+              <motion.div
+                animate={{ 
+                  scale: [0.95, 1.05, 0.95],
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="mb-8"
+              >
+                <ShrimpLogo size={100} showText={false} />
+              </motion.div>
+              
+              <h2 className="font-serif text-2xl font-black text-white tracking-widest uppercase mb-1">
+                Shrimp Time
+              </h2>
+              <p className="text-[10px] text-brand-green font-arabic font-black tracking-widest mb-8">
+                عيش التجربة
+              </p>
+              
+              <div className="w-full relative">
+                {/* Track */}
+                <div className="h-[2px] w-full bg-white/10 rounded-full overflow-hidden relative">
+                  {/* Active progress indicator */}
+                  <div 
+                    className="absolute left-0 top-0 h-full bg-brand-yellow rounded-full shadow-[0_0_8px_#EAD11B] transition-all duration-75"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                
+                {/* Percentage */}
+                <span className="text-[10px] font-mono font-black tracking-widest text-brand-yellow mt-3 block text-center">
+                  {Math.round(progress)}%
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* 1. Global Floating Navbar */}
       <Navbar currentPath={currentPath} navigateTo={navigateTo} />
 

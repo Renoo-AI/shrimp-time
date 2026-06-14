@@ -70,14 +70,19 @@ export default function Navbar({ currentPath, navigateTo }: NavbarProps) {
   return (
     <>
       <motion.nav
-        layout
         initial={{ y: -50, x: '-50%', opacity: 0 }}
-        animate={{ y: 0, x: '-50%', opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className={`fixed top-4 left-1/2 z-50 transition-all duration-500 rounded-full px-4 md:px-6 py-2 flex items-center justify-between border ${
+        animate={{ 
+          y: 0, 
+          x: '-50%', 
+          opacity: 1,
+          width: isScrolled ? '300px' : '92%',
+          maxWidth: isScrolled ? '300px' : '1152px'
+        }}
+        transition={{ type: 'spring', stiffness: 220, damping: 26 }}
+        className={`fixed top-4 left-1/2 z-50 px-4 md:px-6 py-2 flex items-center justify-between border rounded-full ${
           isScrolled
-            ? 'w-[300px] sm:w-[320px] bg-brand-navy/95 backdrop-blur-lg shadow-[0_10px_30px_rgba(0,0,0,0.5),0_0_20px_rgba(234,209,27,0.15)] border-brand-yellow/30'
-            : 'w-[92%] max-w-6xl bg-brand-navy/30 backdrop-blur-md border-white/10'
+            ? 'bg-brand-navy/95 backdrop-blur-lg shadow-[0_10px_30px_rgba(0,0,0,0.5),0_0_20px_rgba(234,209,27,0.15)] border-brand-yellow/30'
+            : 'bg-brand-navy/30 backdrop-blur-md border-white/10'
         }`}
         id="app-navbar"
       >
@@ -93,48 +98,48 @@ export default function Navbar({ currentPath, navigateTo }: NavbarProps) {
             <ShrimpLogo size={isScrolled ? 34 : 42} showText={false} />
           </motion.div>
           
-          {!isScrolled && (
-            <div className="flex flex-col">
-              <span className="font-serif font-black text-white text-base tracking-widest leading-none group-hover:text-brand-yellow transition-colors duration-300">
-                SHRIMP TIME
-              </span>
-              <span className="text-[9px] text-brand-green font-arabic font-black self-start tracking-widest mt-0.5">
-                عيش التجربة
-              </span>
-            </div>
-          )}
+          <div className={`flex flex-col transition-all duration-300 origin-left ${
+            isScrolled ? 'opacity-0 max-w-0 overflow-hidden scale-x-0' : 'opacity-100 max-w-[200px] scale-x-100'
+          }`}>
+            <span className="font-serif font-black text-white text-base tracking-widest leading-none group-hover:text-brand-yellow transition-colors duration-300">
+              SHRIMP TIME
+            </span>
+            <span className="text-[9px] text-brand-green font-arabic font-black self-start tracking-widest mt-0.5">
+              عيش التجربة
+            </span>
+          </div>
         </div>
 
-        {/* Desktop Anchor Menu Links: only visible when not scrolled */}
-        {!isScrolled && (
-          <div className="hidden md:flex items-center gap-8">
-            {[
-              { id: 'hero', label: 'Accueil' },
-              { id: 'menu', label: 'Notre Menu' },
-              { id: 'branches', label: 'Branches' },
-            ].map(item => {
-              const isItemActive = (currentPath === '/menu' && item.id === 'menu') || (currentPath === '/' && activeSection === item.id);
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`text-xs font-black tracking-widest uppercase transition-all duration-300 relative py-1 cursor-pointer hover:text-brand-yellow ${
-                    isItemActive ? 'text-brand-yellow' : 'text-white/80'
-                  }`}
-                >
-                  {item.label}
-                  {isItemActive && (
-                    <motion.span 
-                      layoutId="activeUnderline"
-                      className="absolute bottom-0 left-0 w-full h-[2px] bg-brand-yellow rounded-full shadow-[0_0_8px_#EAD11B]" 
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        )}
+        {/* Desktop Anchor Menu Links: hidden on scroll */}
+        <div className={`hidden md:flex items-center gap-8 transition-all duration-300 ${
+          isScrolled ? 'opacity-0 max-w-0 overflow-hidden pointer-events-none scale-x-0' : 'opacity-100 max-w-[500px] scale-x-100'
+        }`}>
+          {[
+            { id: 'hero', label: 'Accueil' },
+            { id: 'menu', label: 'Notre Menu' },
+            { id: 'branches', label: 'Branches' },
+          ].map(item => {
+            const isItemActive = (currentPath === '/menu' && item.id === 'menu') || (currentPath === '/' && activeSection === item.id);
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                className={`text-xs font-black tracking-widest uppercase transition-all duration-300 relative py-1 cursor-pointer hover:text-brand-yellow ${
+                  isItemActive ? 'text-brand-yellow' : 'text-white/80'
+                }`}
+              >
+                {item.label}
+                {isItemActive && (
+                  <motion.span 
+                    layoutId="activeUnderline"
+                    className="absolute bottom-0 left-0 w-full h-[2px] bg-brand-yellow rounded-full shadow-[0_0_8px_#EAD11B]" 
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
 
         {/* CTA and Menu Actions */}
         <div className="flex items-center gap-2">
